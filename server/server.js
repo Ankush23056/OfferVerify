@@ -45,14 +45,7 @@ async function startServer() {
     });
   });
 
-  app.get('/api/debug-key', (req, res) => {
-    const key = process.env.GROQ_API_KEY;
-    if (!key) {
-      res.json({ exists: false, length: 0 });
-    } else {
-      res.json({ exists: true, length: key.length, preview: key.substring(0, 4) + '...' });
-    }
-  });
+
   
   app.use('/api/verify-offer', verifyLimiter); // Apply rate limit to verify route
   app.use('/api', verifyRoutes);

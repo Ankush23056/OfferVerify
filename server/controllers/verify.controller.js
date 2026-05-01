@@ -33,6 +33,6 @@ export const verifyOffer = async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error('Error in verifyOffer:', error);
-    res.status(500).json({ error: error.message || 'Failed to verify offer' });
+    res.status(500).json({ error: 'An unexpected error occurred during verification. Please try again later.' });
   }
 };

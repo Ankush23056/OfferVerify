@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ShieldCheck, ArrowRight, AlertTriangle, Shield, Zap, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { InfoModal } from './InfoModal';
 
 export function Footer() {
@@ -28,12 +29,12 @@ export function Footer() {
             <h3 className="font-semibold text-white mb-4">Product</h3>
             <ul className="space-y-3">
               <li>
-                <button onClick={() => setActiveModal('how')} className="text-slate-400 hover:text-white text-sm transition-colors text-left">
+                <button onClick={() => setActiveModal('how')} className="text-slate-400 hover:text-white text-sm transition-colors text-left cursor-pointer">
                   How it works
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveModal('features')} className="text-slate-400 hover:text-white text-sm transition-colors text-left">
+                <button onClick={() => setActiveModal('features')} className="text-slate-400 hover:text-white text-sm transition-colors text-left cursor-pointer">
                   Features
                 </button>
               </li>
@@ -44,14 +45,14 @@ export function Footer() {
             <h3 className="font-semibold text-white mb-4">Resources</h3>
             <ul className="space-y-3">
               <li>
-                <button onClick={() => setActiveModal('redflags')} className="text-slate-400 hover:text-white text-sm transition-colors text-left">
+                <Link to="/#red-flags" className="text-slate-400 hover:text-white text-sm transition-colors text-left block">
                   Red flags
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => setActiveModal('faq')} className="text-slate-400 hover:text-white text-sm transition-colors text-left">
+                <Link to="/#faq" className="text-slate-400 hover:text-white text-sm transition-colors text-left block">
                   FAQ
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -59,8 +60,8 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-white mb-4">Legal</h3>
             <ul className="space-y-3">
-              <li><a href="#" className="text-slate-400 hover:text-white text-sm transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="text-slate-400 hover:text-white text-sm transition-colors">Privacy Policy</a></li>
+              <li><Link to="/" className="text-slate-400 hover:text-white text-sm transition-colors">Terms of Service</Link></li>
+              <li><Link to="/" className="text-slate-400 hover:text-white text-sm transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
         </div>
@@ -68,6 +69,7 @@ export function Footer() {
           <p className="text-slate-400 text-sm">© {new Date().getFullYear()} OfferVerify. 100% Free for job seekers.</p>
         </div>
       </div>
+
 
       {/* Modals */}
       <InfoModal 
@@ -127,52 +129,8 @@ export function Footer() {
         </div>
       </InfoModal>
 
-      <InfoModal 
-        isOpen={activeModal === 'redflags'} 
-        onClose={closeModal} 
-        title="Common Job Scam Red Flags"
-      >
-        <ul className="space-y-4">
-          <li className="flex gap-3 items-start">
-            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-            <span><strong className="text-white">Equipment Payments:</strong> Any request to pay for a laptop, software, or "training" upfront is a 100% confirmed scam.</span>
-          </li>
-          <li className="flex gap-3 items-start">
-            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-            <span><strong className="text-white">Chat-Only Interviews:</strong> Legitimate companies will rarely conduct entire hiring processes exclusively via Telegram, WhatsApp, or Signal.</span>
-          </li>
-          <li className="flex gap-3 items-start">
-            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-            <span><strong className="text-white">Suspicious Domains:</strong> Use of public domains (@gmail.com, @outlook.com) or mis-spelled corporate domains.</span>
-          </li>
-          <li className="flex gap-3 items-start">
-            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-            <span><strong className="text-white">High Salary, Low Requirement:</strong> Offers that seem "too good to be true" for your experience level.</span>
-          </li>
-        </ul>
-      </InfoModal>
-
-      <InfoModal 
-        isOpen={activeModal === 'faq'} 
-        onClose={closeModal} 
-        title="Frequently Asked Questions"
-      >
-        <div className="space-y-6">
-          <div>
-            <h4 className="text-white font-medium mb-2">How accurate is the check?</h4>
-            <p className="text-sm">Our AI model (Llama 3.3) is specifically trained on thousands of verified scam patterns. While it reaches 98%+ accuracy for known scams, we always recommend human caution.</p>
-          </div>
-          <div>
-            <h4 className="text-white font-medium mb-2">Is my data stored?</h4>
-            <p className="text-sm">No. Uploaded documents are processed in memory and immediately discarded. We only store the company name and high-level risk score to help the community track emerging scam trends.</p>
-          </div>
-          <div>
-            <h4 className="text-white font-medium mb-2">Is this really free?</h4>
-            <p className="text-sm">Yes. OfferVerify is a non-profit tool dedicated to protecting the community from financial exploitation. We will never charge job seekers for our verification services.</p>
-          </div>
-        </div>
-      </InfoModal>
     </footer>
   );
 }
+
 

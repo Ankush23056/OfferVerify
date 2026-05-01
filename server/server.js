@@ -1,8 +1,9 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
-import mongoose from 'mongoose';
+import { connectDB } from './config/db.js';
 
 import verifyRoutes from './routes/verify.routes.js';
 import communityRoutes from './routes/community.routes.js';
@@ -11,17 +12,8 @@ async function startServer() {
   const app = express();
   const PORT = process.env.PORT || 3001;
 
-  // Connect to MongoDB if URI is provided
-  if (process.env.MONGODB_URI) {
-    try {
-      await mongoose.connect(process.env.MONGODB_URI);
-      console.log('Connected to MongoDB');
-    } catch (err) {
-      console.error('Failed to connect to MongoDB:', err);
-    }
-  } else {
-    console.warn('MONGODB_URI is not set. Community features requiring database will not work.');
-  }
+  // Connect to MongoDB
+  await connectDB();
 
   // Middleware
   app.use(cors());

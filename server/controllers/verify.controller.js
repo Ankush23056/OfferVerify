@@ -22,7 +22,7 @@ export const verifyOffer = async (req, res) => {
         await Verification.create({
           userId: 'anonymous', // could extract from request if we had auth
           companyName: result.companyName,
-          riskScore: result.score
+          riskScore: result.riskScore
         });
       } catch (dbErr) {
         console.error('Error saving verification to DB:', dbErr);

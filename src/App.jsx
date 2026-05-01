@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Layout } from './components/layout/Layout';
 import { Home } from './pages/Home';
 import { Verify } from './pages/Verify';
+import { SearchPage } from './pages/Search';
 
 function ScrollToHashElement() {
   const { pathname, hash } = useLocation();
@@ -31,6 +32,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/verify" element={<Verify />} />
+          <Route path="/search/:companyName" element={<SearchPage />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -65,7 +65,7 @@ export function CommunityReports({ companyName }) {
     return <div className="mt-8 text-slate-400 text-center text-sm py-4">Loading community data...</div>;
   }
 
-  const reports = data?.company?.scamReports || [];
+  const reports = data?.reports || [];
   const verificationsCount = data?.verifications?.length || 0;
   const avgScore = verificationsCount > 0 
     ? Math.round(data.verifications.reduce((acc, v) => acc + v.riskScore, 0) / verificationsCount)

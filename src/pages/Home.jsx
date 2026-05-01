@@ -2,6 +2,7 @@ import { Upload, ArrowRight, BadgeInfo, CheckCircle2, FileText, AlertTriangle, S
 import { motion, AnimatePresence } from 'motion/react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { GlobalScamSearch } from '../components/verify/GlobalScamSearch';
 
 export function Home() {
   const [openFaq, setOpenFaq] = useState(null);
@@ -131,6 +132,8 @@ export function Home() {
           </motion.div>
         </div>
       </div>
+
+      <GlobalScamSearch />
 
       {/* Stats Section */}
       <section className="relative z-10 border-y border-white/10 backdrop-blur-md bg-white/5 py-12">

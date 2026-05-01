@@ -53,7 +53,7 @@ export const analyzeOfferWithAI = async (fileBuffer, mimeType) => {
   }
 
   // 2. Call Groq API
-  const promptInstruction = `You are an expert in Indian employment law and job scams. Analyze this offer letter for: registration fees, training deposits, suspicious email domains, missing CIN/Registration numbers, and unrealistic salary-to-company-size ratios. Return a JSON object with: riskScore (0-100), redFlags (array), warnings (array), and positives (array). Do not wrap the JSON in markdown code blocks, return raw JSON only.`;
+  const promptInstruction = `You are an expert in Indian employment law and job scams. Analyze this offer letter for: registration fees, training deposits, suspicious email domains, missing CIN/Registration numbers, and unrealistic salary-to-company-size ratios. Return a JSON object with: companyName (string), riskScore (0-100), redFlags (array), warnings (array), and positives (array). Do not wrap the JSON in markdown code blocks, return raw JSON only.`;
   
   if (messages[0].content && Array.isArray(messages[0].content)) {
     messages[0].content.unshift({ type: "text", text: promptInstruction });
@@ -88,6 +88,7 @@ export const analyzeOfferWithAI = async (fileBuffer, mimeType) => {
     const jsonResult = JSON.parse(jsonStr);
     
     return {
+      companyName: jsonResult.companyName || 'Unknown Company',
       riskScore: typeof jsonResult.riskScore === 'number' ? jsonResult.riskScore : 50,
       redFlags: Array.isArray(jsonResult.redFlags) ? jsonResult.redFlags : [],
       warnings: Array.isArray(jsonResult.warnings) ? jsonResult.warnings : [],

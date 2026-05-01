@@ -5,16 +5,20 @@ import mongoose from 'mongoose';
 export const verifyOffer = async (req, res) => {
   try {
     const file = req.file;
+    const textContent = req.body.text;
 
-    if (!file) {
-      res.status(400).json({ error: 'No file uploaded or invalid file type' });
+    if (!file && !textContent) {
+      res.status(400).json({ error: 'No file uploaded or text provided' });
       return;
     }
 
-    const { buffer, mimetype } = file;
-
-    // Send file buffer to service for AI analysis
-    const result = await analyzeOfferWithAI(buffer, mimetype);
+    let result;
+    if (file) {
+      const { buffer, mimetype } = file;
+      result = await analyzeOfferWithAI(buffer, mimetype);
+    } else {
+      result = await analyzeOfferWithAI(null, 'text/plain', textContent);
+    }
 
     // If connected to mongo, save verification
     if (mongoose.connection.readyState === 1 && result.companyName) {

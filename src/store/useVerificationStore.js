@@ -12,6 +12,23 @@ export const useVerificationStore = create((set, get) => ({
   setResult: (result) => set({ result }),
   setUploadProgress: (progress) => set({ uploadProgress: progress }),
   reset: () => set({ status: 'idle', file: null, result: null, errorMsg: null, uploadProgress: 0 }),
+  verifyText: async (text) => {
+    set({ status: 'analyzing', errorMsg: null, file: null });
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/verify-offer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Verification failed');
+      
+      set({ status: 'success', result: data });
+    } catch (e) {
+      set({ status: 'error', errorMsg: e.message });
+    }
+  },
   startVerification: async (file) => {
     set({ file, status: 'uploading', errorMsg: null, uploadProgress: 0 });
 

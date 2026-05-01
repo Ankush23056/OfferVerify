@@ -45,6 +45,26 @@ async function startServer() {
     });
   });
 
+  app.get('/api/stats', async (req, res) => {
+    try {
+      const { Verification } = await import('./models/Verification.js');
+      const { ScamReport } = await import('./models/ScamReport.js');
+      
+      const [verificationsCount, scamsCount] = await Promise.all([
+        Verification.countDocuments(),
+        ScamReport.countDocuments()
+      ]);
+      
+      res.json({
+        verifications: verificationsCount,
+        reports: scamsCount,
+        moneySaved: Math.floor(verificationsCount * 12500) // Mock calculation: ₹12.5k avg saved per check
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch stats' });
+    }
+  });
+
 
   
   app.use('/api/verify-offer', verifyLimiter); // Apply rate limit to verify route

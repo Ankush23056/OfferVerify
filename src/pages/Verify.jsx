@@ -1,12 +1,14 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'motion/react';
-import { UploadCloud, File, FileText, Bot, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
+import { UploadCloud, File, FileText, Bot, CheckCircle2, Loader2, AlertCircle, Type, Send } from 'lucide-react';
 import { useVerificationStore } from '../store/useVerificationStore';
 import { ResultsDashboard } from '../components/verify/ResultsDashboard';
 
 export function Verify() {
-  const { status, file, errorMsg, uploadProgress, startVerification } = useVerificationStore();
+  const { status, file, errorMsg, uploadProgress, startVerification, verifyText } = useVerificationStore();
+  const [inputMode, setInputMode] = useState('file'); // 'file' or 'text'
+  const [pastedText, setPastedText] = useState('');
 
   const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles.length > 0) {
@@ -22,6 +24,15 @@ export function Verify() {
     },
     maxFiles: 1
   });
+
+  const handleTextSubmit = (e) => {
+    e.preventDefault();
+    if (pastedText.trim().length < 50) {
+      alert("Please paste more text for an accurate analysis (min 50 characters).");
+      return;
+    }
+    verifyText(pastedText);
+  };
 
   return (
     <div className="relative min-h-[calc(100vh-5rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -41,10 +52,30 @@ export function Verify() {
 
         <div className={`backdrop-blur-xl bg-white/5 border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden min-h-[400px] flex flex-col relative transition-all duration-500 ease-out ${status === 'success' ? 'max-w-4xl mx-auto ring-1 ring-white/20' : 'max-w-3xl mx-auto'}`}>
           
+          {/* Input Mode Tabs */}
+          {status === 'idle' && (
+            <div className="flex border-b border-white/10">
+              <button 
+                onClick={() => setInputMode('file')}
+                className={`flex-1 py-4 text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${inputMode === 'file' ? 'text-cyan-400 bg-white/5 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}
+              >
+                <UploadCloud className="w-4 h-4" />
+                Upload File
+              </button>
+              <button 
+                onClick={() => setInputMode('text')}
+                className={`flex-1 py-4 text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${inputMode === 'text' ? 'text-indigo-400 bg-white/5 border-b-2 border-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}
+              >
+                <Type className="w-4 h-4" />
+                Paste Text
+              </button>
+            </div>
+          )}
+
           <AnimatePresence mode="wait">
-            {status === 'idle' && (
+            {status === 'idle' && inputMode === 'file' && (
               <motion.div
-                key="idle"
+                key="file-idle"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
@@ -69,6 +100,38 @@ export function Verify() {
                     <span className="px-3 py-1 bg-white/5 border border-white/10 text-slate-300 text-xs font-medium rounded-full">Images (JPG, PNG)</span>
                   </div>
                 </div>
+              </motion.div>
+            )}
+
+            {status === 'idle' && inputMode === 'text' && (
+              <motion.div
+                key="text-idle"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="flex-1 flex flex-col p-10 lg:p-16"
+              >
+                <form onSubmit={handleTextSubmit} className="flex-1 flex flex-col">
+                  <div className="mb-4">
+                    <h3 className="text-xl font-bold text-white mb-2">Paste offer letter text</h3>
+                    <p className="text-slate-400 text-sm">Include company name, salary, and any contact details mentioned.</p>
+                  </div>
+                  <textarea 
+                    value={pastedText}
+                    onChange={(e) => setPastedText(e.target.value)}
+                    placeholder="Paste the offer letter content here... (e.g. Dear Candidate, we are pleased to offer you...)"
+                    className="flex-1 min-h-[200px] bg-white/5 border border-white/10 rounded-2xl p-6 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all resize-none mb-6"
+                  />
+                  <button 
+                    type="submit"
+                    className="w-full py-4 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50"
+                    disabled={!pastedText.trim()}
+                  >
+                    <Send className="w-5 h-5" />
+                    Analyze Text Now
+                  </button>
+                </form>
               </motion.div>
             )}
 

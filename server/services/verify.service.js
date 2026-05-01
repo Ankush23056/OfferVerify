@@ -15,15 +15,17 @@ const getGroqClient = () => {
   return groq;
 };
 
-export const analyzeOfferWithAI = async (fileBuffer, mimeType) => {
-  let text = '';
+export const analyzeOfferWithAI = async (fileBuffer, mimeType, rawText = null) => {
+  let text = rawText || '';
   let messages = [];
   let model = "llama-3.3-70b-versatile";
 
   const client = getGroqClient();
 
   // 1. Extract text or prepare inline data
-  if (mimeType === 'application/pdf') {
+  if (rawText) {
+    messages = [{ role: 'user', content: rawText }];
+  } else if (mimeType === 'application/pdf') {
     try {
       const data = await pdfParse(fileBuffer);
       text = data.text;

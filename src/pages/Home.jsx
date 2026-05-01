@@ -1,11 +1,32 @@
 import { Upload, ArrowRight, BadgeInfo, CheckCircle2, FileText, AlertTriangle, Sparkles, Brain, ShieldCheck, FileSearch, Building2, Users, Globe, TrendingUp, Bot, IndianRupee, Mail, Clock, VideoOff, MapPin, AlertCircle, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { GlobalScamSearch } from '../components/verify/GlobalScamSearch';
+import API_BASE_URL from '../config/api';
 
 export function Home() {
   const [openFaq, setOpenFaq] = useState(null);
+  const [stats, setStats] = useState({ verifications: '10k+', reports: '2.5k+', moneySaved: '₹38Cr' });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/stats`);
+        const data = await res.json();
+        if (data && !data.error) {
+          setStats({
+            verifications: `${data.verifications}+`,
+            reports: `${data.reports}+`,
+            moneySaved: data.moneySaved > 10000000 ? `₹${(data.moneySaved / 10000000).toFixed(1)}Cr` : `₹${(data.moneySaved / 100000).toFixed(1)}L`
+          });
+        }
+      } catch (err) {
+        console.error('Failed to fetch real stats:', err);
+      }
+    };
+    fetchStats();
+  }, []);
 
   return (
     <>
@@ -146,8 +167,8 @@ export function Home() {
               transition={{ duration: 0.5 }}
               className="text-center px-4"
             >
-              <div className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 mb-2 tracking-tight">60s</div>
-              <div className="text-slate-400 font-medium text-sm lg:text-base">Average verification time</div>
+              <div className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 mb-2 tracking-tight">{stats.verifications}</div>
+              <div className="text-slate-400 font-medium text-sm lg:text-base">Offers verified</div>
             </motion.div>
 
             <motion.div 
@@ -157,8 +178,8 @@ export function Home() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-center px-4"
             >
-              <div className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 mb-2 tracking-tight">20+</div>
-              <div className="text-slate-400 font-medium text-sm lg:text-base">Scam patterns detected</div>
+              <div className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 mb-2 tracking-tight">{stats.reports}</div>
+              <div className="text-slate-400 font-medium text-sm lg:text-base">Scams reported</div>
             </motion.div>
 
             <motion.div 
@@ -168,8 +189,8 @@ export function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-center px-4"
             >
-              <div className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 mb-2 tracking-tight">₹38Cr</div>
-              <div className="text-slate-400 font-medium text-sm lg:text-base">Lost to job scams in 2024</div>
+              <div className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 mb-2 tracking-tight">{stats.moneySaved}</div>
+              <div className="text-slate-400 font-medium text-sm lg:text-base">Saved by job seekers</div>
             </motion.div>
 
             <motion.div 

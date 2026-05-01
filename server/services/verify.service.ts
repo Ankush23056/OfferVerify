@@ -1,135 +1,115 @@
-import { GoogleGenAI, Type, Part } from '@google/genai';
+import Groq from 'groq-sdk';
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 
-let ai: GoogleGenAI | null = null;
+let groq: Groq | null = null;
 
-const getAIConfig = () => {
-  if (!ai) {
-    let apiKey = process.env.GEMINI_API_KEY;
-    console.log("DEBUG: Raw GEMINI_API_KEY from process.env:", apiKey ? `(Length: ${apiKey.length}, starts with: ${apiKey.substring(0, 4)}...)` : 'undefined');
+const getGroqClient = () => {
+  if (!groq) {
+    let apiKey = process.env.GROQ_API_KEY;
+    console.log("DEBUG: Raw GROQ_API_KEY from process.env:", apiKey ? `(Length: ${apiKey.length}, starts with: ${apiKey.substring(0, 4)}...)` : 'undefined');
     if (!apiKey) {
-      throw new Error(`GEMINI_API_KEY is missing. You are likely using an outdated key or disabled your AI Studio secret. Please open the "Settings" panel (gear icon) -> "Secrets" and select your Gemini API key.`);
+      throw new Error(`GROQ_API_KEY is missing. Please check your environment variables.`);
     }
-    // Clean up potential quotes or whitespace accidentally added in the secrets manager
+    // Clean up potential quotes or whitespace
     apiKey = apiKey.replace(/['"]/g, '').trim();
-    console.log("DEBUG: Cleaned GEMINI_API_KEY:", `(Length: ${apiKey.length}, starts with: ${apiKey.substring(0, 4)}...)`);
-    ai = new GoogleGenAI({ apiKey });
+    groq = new Groq({ apiKey });
   }
-  return ai;
+  return groq;
 };
 
 export const analyzeOfferWithAI = async (fileBuffer: Buffer, mimeType: string) => {
   let text = '';
-  let parts: Part[] = [];
+  let messages: any[] = [];
+  let model = "llama3-8b-8192";
 
   // Initialize AI client
-  const aiClient = getAIConfig();
+  const client = getGroqClient();
 
   // 1. Extract text or prepare inline data
   if (mimeType === 'application/pdf') {
     try {
       const data = await pdfParse(fileBuffer);
       text = data.text;
-      parts = [{ text: text }];
+      messages = [{ role: 'user', content: text }];
     } catch (e) {
       console.error('Failed to parse PDF', e);
       throw new Error('Failed to parse PDF file');
     }
   } else if (mimeType.startsWith('image/')) {
-    // For images, we can pass them directly to Gemini
-    parts = [{
-      inlineData: {
-        mimeType: mimeType,
-        data: fileBuffer.toString("base64")
+    model = "llama-3.2-11b-vision-preview";
+    messages = [
+      {
+        role: "user",
+        content: [
+          { type: "image_url", image_url: { url: `data:${mimeType};base64,${fileBuffer.toString("base64")}` } }
+        ]
       }
-    }];
+    ];
   } else {
     // Treat as plain text
     text = fileBuffer.toString('utf-8');
-    parts = [{ text: text }];
+    messages = [{ role: 'user', content: text }];
   }
 
-  if (parts.length === 0 || (text && text.trim().length === 0)) {
-    if (mimeType === 'application/pdf' || !mimeType.startsWith('image/')) {
+  if (messages.length === 0 || (text && text.trim().length === 0)) {
+    if (!mimeType.startsWith('image/')) {
       throw new Error('No readable text found in document.');
     }
   }
 
-  // 2. Call Gemini API
-  const promptInstruction = `You are a job offer verification expert. Analyze this text (or image) of an employment offer for scam patterns like registration fees, missing CIN, and generic emails. Return JSON with redFlags[], warnings[], positives[], recommendation (a quick verdict), and a riskScore.`;
+  // 2. Call Groq API
+  const promptInstruction = `You are a job offer verification expert. Analyze this text (or image) of an employment offer for scam patterns like registration fees, missing CIN, and generic emails. Return a JSON object with EXACTLY the following keys (do not wrap in markdown):
+- "companyName" (string: name of company, or "Unknown Company")
+- "score" (integer 0-100: trust score where 100 is perfectly safe)
+- "riskLevel" (string: strictly "low", "medium", or "high")
+- "recommendation" (string: brief verdict)
+- "redFlags" (array of strings: critical scam indicators)
+- "warnings" (array of strings: non-critical anomalies)
+- "positives" (array of strings: legitimate markers)`;
   
-  parts.unshift({ text: promptInstruction });
+  if (messages[0].content && Array.isArray(messages[0].content)) {
+    messages[0].content.unshift({ type: "text", text: promptInstruction });
+  } else {
+    messages.unshift({ role: 'system', content: promptInstruction });
+  }
 
   let response;
   try {
-    response = await aiClient.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: { parts },
-      config: {
-        temperature: 0.2, // low temp for analytical task
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            companyName: {
-              type: Type.STRING,
-              description: "The name of the company on the offer letter. If not found, use 'Unknown Company'."
-            },
-            score: {
-              type: Type.INTEGER,
-              description: "A calculated risk score (trust score) representing safety from 0 to 100, where 100 is perfectly safe and 0 is extremely dangerous/risky."
-            },
-            riskLevel: {
-              type: Type.STRING,
-              description: "Must be exactly 'low', 'medium', or 'high' based on the safety constraints.",
-            },
-            recommendation: {
-              type: Type.STRING,
-              description: "A strong, brief recommendation string."
-            },
-            redFlags: {
-              type: Type.ARRAY,
-              items: { type: Type.STRING },
-              description: "Array of critical scam indicators."
-            },
-            warnings: {
-              type: Type.ARRAY,
-              items: { type: Type.STRING },
-              description: "Array of anomalies that aren't critical red flags but justify caution."
-            },
-            positives: {
-              type: Type.ARRAY,
-              items: { type: Type.STRING },
-              description: "Array of positive legitimate markers found in the document."
-            }
-          },
-          required: ["companyName", "score", "riskLevel", "recommendation", "redFlags", "warnings", "positives"]
-        }
-      }
+    response = await client.chat.completions.create({
+      messages,
+      model,
+      temperature: 0.2,
+      response_format: model === "llama-3.2-11b-vision-preview" ? undefined : { type: "json_object" }
     });
   } catch (apiErr: any) {
-    console.error("Gemini API Error Detail:", JSON.stringify(apiErr, null, 2));
-    console.error("Gemini API Error Message:", apiErr.message);
-    if (apiErr.message?.includes('API key not valid')) {
-      throw new Error("Your specified Gemini API Key is invalid. If you added a custom key in Settings -> Secrets, please ensure it is correct (no extra spaces or placeholder text), or delete it to use the system default.");
-    }
-    if (apiErr.status === 403) {
-      throw new Error(`Gemini Authentication Error (403): ${apiErr.message}`);
-    }
-    if (apiErr.status === 400) {
-       throw new Error(`Gemini Bad Request (400): ${apiErr.message}`);
-    }
-    throw apiErr;
+    console.error("Groq API Error Detail:", apiErr);
+    throw new Error(`Groq API Error: ${apiErr.message}`);
   }
 
-  const rawText = response.text;
+  const rawText = response.choices[0]?.message?.content;
   if (!rawText) {
     throw new Error('AI returned empty response');
   }
 
   try {
-    const jsonResult = JSON.parse(rawText);
-    return jsonResult;
+    let jsonStr = rawText;
+    if (jsonStr.includes('\`\`\`json')) {
+      jsonStr = jsonStr.split('\`\`\`json')[1].split('\`\`\`')[0].trim();
+    } else if (jsonStr.includes('\`\`\`')) {
+      jsonStr = jsonStr.split('\`\`\`')[1].split('\`\`\`')[0].trim();
+    }
+    const jsonResult = JSON.parse(jsonStr);
+    
+    // Ensure all required fields exist
+    return {
+      companyName: jsonResult.companyName || "Unknown Company",
+      score: typeof jsonResult.score === 'number' ? jsonResult.score : 50,
+      riskLevel: ["low", "medium", "high"].includes(jsonResult.riskLevel) ? jsonResult.riskLevel : "medium",
+      recommendation: jsonResult.recommendation || "Needs manual review.",
+      redFlags: Array.isArray(jsonResult.redFlags) ? jsonResult.redFlags : [],
+      warnings: Array.isArray(jsonResult.warnings) ? jsonResult.warnings : [],
+      positives: Array.isArray(jsonResult.positives) ? jsonResult.positives : []
+    };
   } catch (e) {
     console.error('Failed to parse AI output as JSON', rawText);
     throw new Error('AI generated invalid JSON');

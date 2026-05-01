@@ -33,7 +33,7 @@ async function startServer() {
   });
 
   app.get('/api/debug-key', (req, res) => {
-    const key = process.env.GEMINI_API_KEY;
+    const key = process.env.GROQ_API_KEY;
     if (!key) {
       res.json({ exists: false, length: 0 });
     } else {

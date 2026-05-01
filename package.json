@@ -12,7 +12,6 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@google/genai": "^1.29.0",
     "@tailwindcss/vite": "^4.1.14",
     "@types/cors": "^2.8.19",
     "@types/multer": "^2.1.0",
@@ -21,6 +20,7 @@
     "dotenv": "^17.2.3",
     "esbuild": "^0.28.0",
     "express": "^4.21.2",
+    "groq-sdk": "^1.1.2",
     "lucide-react": "^0.546.0",
     "mongoose": "^9.6.1",
     "motion": "^12.23.24",

@@ -4,6 +4,8 @@ import { Layout } from './components/layout/Layout';
 import { Home } from './pages/Home';
 import { Verify } from './pages/Verify';
 import { SearchPage } from './pages/Search';
+import { Terms } from './pages/Terms';
+import { Privacy } from './pages/Privacy';
 
 function ScrollToHashElement() {
   const { pathname, hash } = useLocation();
@@ -33,6 +35,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/verify" element={<Verify />} />
           <Route path="/search/:companyName" element={<SearchPage />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
         </Routes>
       </Layout>
     </BrowserRouter>

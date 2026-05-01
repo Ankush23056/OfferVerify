@@ -6,11 +6,9 @@ let groq: Groq | null = null;
 const getGroqClient = () => {
   if (!groq) {
     let apiKey = process.env.GROQ_API_KEY;
-    console.log("DEBUG: Raw GROQ_API_KEY from process.env:", apiKey ? `(Length: ${apiKey.length}, starts with: ${apiKey.substring(0, 4)}...)` : 'undefined');
     if (!apiKey) {
       throw new Error(`GROQ_API_KEY is missing. Please check your environment variables.`);
     }
-    // Clean up potential quotes or whitespace
     apiKey = apiKey.replace(/['"]/g, '').trim();
     groq = new Groq({ apiKey });
   }
@@ -20,9 +18,8 @@ const getGroqClient = () => {
 export const analyzeOfferWithAI = async (fileBuffer: Buffer, mimeType: string) => {
   let text = '';
   let messages: any[] = [];
-  let model = "llama3-8b-8192";
+  let model = "llama-3.3-70b-versatile";
 
-  // Initialize AI client
   const client = getGroqClient();
 
   // 1. Extract text or prepare inline data
@@ -32,7 +29,6 @@ export const analyzeOfferWithAI = async (fileBuffer: Buffer, mimeType: string) =
       text = data.text;
       messages = [{ role: 'user', content: text }];
     } catch (e) {
-      console.error('Failed to parse PDF', e);
       throw new Error('Failed to parse PDF file');
     }
   } else if (mimeType.startsWith('image/')) {
@@ -46,7 +42,6 @@ export const analyzeOfferWithAI = async (fileBuffer: Buffer, mimeType: string) =
       }
     ];
   } else {
-    // Treat as plain text
     text = fileBuffer.toString('utf-8');
     messages = [{ role: 'user', content: text }];
   }
@@ -58,14 +53,7 @@ export const analyzeOfferWithAI = async (fileBuffer: Buffer, mimeType: string) =
   }
 
   // 2. Call Groq API
-  const promptInstruction = `You are a job offer verification expert. Analyze this text (or image) of an employment offer for scam patterns like registration fees, missing CIN, and generic emails. Return a JSON object with EXACTLY the following keys (do not wrap in markdown):
-- "companyName" (string: name of company, or "Unknown Company")
-- "score" (integer 0-100: trust score where 100 is perfectly safe)
-- "riskLevel" (string: strictly "low", "medium", or "high")
-- "recommendation" (string: brief verdict)
-- "redFlags" (array of strings: critical scam indicators)
-- "warnings" (array of strings: non-critical anomalies)
-- "positives" (array of strings: legitimate markers)`;
+  const promptInstruction = `You are an expert in Indian employment law and job scams. Analyze this offer letter for: registration fees, training deposits, suspicious email domains, missing CIN/Registration numbers, and unrealistic salary-to-company-size ratios. Return a JSON object with: riskScore (0-100), redFlags (array), warnings (array), and positives (array). Do not wrap the JSON in markdown code blocks, return raw JSON only.`;
   
   if (messages[0].content && Array.isArray(messages[0].content)) {
     messages[0].content.unshift({ type: "text", text: promptInstruction });
@@ -82,7 +70,6 @@ export const analyzeOfferWithAI = async (fileBuffer: Buffer, mimeType: string) =
       response_format: model === "llama-3.2-11b-vision-preview" ? undefined : { type: "json_object" }
     });
   } catch (apiErr: any) {
-    console.error("Groq API Error Detail:", apiErr);
     throw new Error(`Groq API Error: ${apiErr.message}`);
   }
 
@@ -100,18 +87,13 @@ export const analyzeOfferWithAI = async (fileBuffer: Buffer, mimeType: string) =
     }
     const jsonResult = JSON.parse(jsonStr);
     
-    // Ensure all required fields exist
     return {
-      companyName: jsonResult.companyName || "Unknown Company",
-      score: typeof jsonResult.score === 'number' ? jsonResult.score : 50,
-      riskLevel: ["low", "medium", "high"].includes(jsonResult.riskLevel) ? jsonResult.riskLevel : "medium",
-      recommendation: jsonResult.recommendation || "Needs manual review.",
+      riskScore: typeof jsonResult.riskScore === 'number' ? jsonResult.riskScore : 50,
       redFlags: Array.isArray(jsonResult.redFlags) ? jsonResult.redFlags : [],
       warnings: Array.isArray(jsonResult.warnings) ? jsonResult.warnings : [],
       positives: Array.isArray(jsonResult.positives) ? jsonResult.positives : []
     };
   } catch (e) {
-    console.error('Failed to parse AI output as JSON', rawText);
     throw new Error('AI generated invalid JSON');
   }
 };

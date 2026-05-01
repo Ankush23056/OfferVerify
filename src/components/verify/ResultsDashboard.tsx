@@ -1,7 +1,6 @@
-import { AlertTriangle, CheckCircle2, ShieldAlert, BadgeInfo, RefreshCw } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ShieldAlert, RefreshCw } from 'lucide-react';
 import { useVerificationStore } from '../../store/useVerificationStore';
 import { motion } from 'motion/react';
-import { CommunityReports } from './CommunityReports';
 
 export function ResultsDashboard() {
   const result = useVerificationStore((state) => state.result);
@@ -9,9 +8,16 @@ export function ResultsDashboard() {
 
   if (!result) return null;
 
-  const isHighRisk = result.riskLevel === 'high';
-  const isMediumRisk = result.riskLevel === 'medium';
-  const isLowRisk = result.riskLevel === 'low';
+  const { riskScore } = result;
+  const isHighRisk = riskScore < 40;
+  const isMediumRisk = riskScore >= 40 && riskScore < 80;
+  const isLowRisk = riskScore >= 80;
+
+  const recommendation = isHighRisk 
+    ? "Critical Risk! Likely a scam." 
+    : isMediumRisk 
+      ? "Exercise Caution. Review anomalies." 
+      : "Looks Legitimate and Safe.";
 
   const scoreColor = isHighRisk 
     ? 'text-red-500' 
@@ -60,7 +66,7 @@ export function ResultsDashboard() {
       <div className={`mb-8 p-4 sm:p-5 rounded-2xl border ${isHighRisk ? 'bg-red-500/10 border-red-500/30' : isMediumRisk ? 'bg-amber-500/10 border-amber-500/30' : 'bg-emerald-500/10 border-emerald-500/30'} flex items-start sm:items-center gap-4 shadow-lg`}>
          <div className="flex-1">
            <p className="text-white font-bold text-lg sm:text-xl tracking-tight">
-             {result.recommendation}
+             {recommendation}
            </p>
          </div>
       </div>
@@ -70,13 +76,13 @@ export function ResultsDashboard() {
         <div className="md:col-span-1 border border-white/10 bg-white/5 p-6 md:p-8 rounded-3xl text-center flex flex-col items-center justify-center shadow-lg relative overflow-hidden backdrop-blur-xl">
           <div className={`absolute top-0 w-full h-1 ${scoreBgColor}`} />
           <h3 className="text-slate-400 font-semibold mb-4 uppercase tracking-widest text-xs">Trust Score</h3>
-          <div className={`text-7xl font-black ${scoreColor} tracking-tighter mb-2`}>{result.score}</div>
+          <div className={`text-7xl font-black ${scoreColor} tracking-tighter mb-2`}>{result.riskScore}</div>
           <div className="text-slate-500 font-bold text-sm uppercase tracking-widest mb-6">out of 100</div>
           
           <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden flex">
             <motion.div 
               initial={{ width: 0 }}
-              animate={{ width: `${result.score}%` }}
+              animate={{ width: `${result.riskScore}%` }}
               transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
               className={`h-full ${scoreBgColor}`} 
             />
@@ -142,10 +148,6 @@ export function ResultsDashboard() {
 
         </div>
       </div>
-
-      {result.companyName && (
-        <CommunityReports companyName={result.companyName} />
-      )}
     </motion.div>
   );
 }

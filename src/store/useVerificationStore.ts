@@ -4,10 +4,7 @@ export type Status = 'idle' | 'uploading' | 'extracting' | 'analyzing' | 'succes
 export type RiskLevel = 'low' | 'medium' | 'high';
 
 export interface VerificationResult {
-  companyName: string;
-  score: number;
-  riskLevel: RiskLevel;
-  recommendation: string;
+  riskScore: number;
   redFlags: string[];
   warnings: string[];
   positives: string[];

@@ -1,30 +1,6 @@
 import { create } from 'zustand';
 
-export type Status = 'idle' | 'uploading' | 'extracting' | 'analyzing' | 'success' | 'error';
-export type RiskLevel = 'low' | 'medium' | 'high';
-
-export interface VerificationResult {
-  riskScore: number;
-  redFlags: string[];
-  warnings: string[];
-  positives: string[];
-}
-
-interface VerificationState {
-  status: Status;
-  errorMsg: string | null;
-  file: File | null;
-  result: VerificationResult | null;
-  uploadProgress: number; // 0 to 100
-  setStatus: (status: Status) => void;
-  setFile: (file: File | null) => void;
-  setResult: (result: VerificationResult | null) => void;
-  setUploadProgress: (progress: number) => void;
-  reset: () => void;
-  startVerification: (file: File) => Promise<void>;
-}
-
-export const useVerificationStore = create<VerificationState>((set, get) => ({
+export const useVerificationStore = create((set, get) => ({
   status: 'idle',
   errorMsg: null,
   file: null,
@@ -35,7 +11,7 @@ export const useVerificationStore = create<VerificationState>((set, get) => ({
   setResult: (result) => set({ result }),
   setUploadProgress: (progress) => set({ uploadProgress: progress }),
   reset: () => set({ status: 'idle', file: null, result: null, errorMsg: null, uploadProgress: 0 }),
-  startVerification: async (file: File) => {
+  startVerification: async (file) => {
     set({ file, status: 'uploading', errorMsg: null, uploadProgress: 0 });
 
     try {
@@ -45,7 +21,7 @@ export const useVerificationStore = create<VerificationState>((set, get) => ({
       // Perform upload with XMLHttpRequest to track progress
       const xhr = new XMLHttpRequest();
       
-      const response = await new Promise<{ ok: boolean; status: number; text: string }>((resolve, reject) => {
+      const response = await new Promise((resolve, reject) => {
         xhr.upload.addEventListener('progress', (event) => {
           if (event.lengthComputable) {
             const progress = Math.round((event.loaded * 100) / event.total);
@@ -109,7 +85,7 @@ export const useVerificationStore = create<VerificationState>((set, get) => ({
         });
       }, 800);
 
-    } catch (e: any) {
+    } catch (e) {
       console.error(e);
       set({ status: 'error', errorMsg: e.message || 'An unknown error occurred.' });
     }

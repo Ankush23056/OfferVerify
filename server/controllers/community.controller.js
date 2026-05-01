@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
 import { Company } from '../models/Company.js';
 import { Verification } from '../models/Verification.js';
 
-export const submitReport = async (req: Request, res: Response) => {
+export const submitReport = async (req, res) => {
   try {
     const { companyName, reportDetails, userId } = req.body;
 
@@ -32,7 +31,7 @@ export const submitReport = async (req: Request, res: Response) => {
   }
 };
 
-export const getCompanyData = async (req: Request, res: Response) => {
+export const getCompanyData = async (req, res) => {
   try {
     const { name } = req.params;
 

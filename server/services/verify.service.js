@@ -1,7 +1,7 @@
 import Groq from 'groq-sdk';
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 
-let groq: Groq | null = null;
+let groq = null;
 
 const getGroqClient = () => {
   if (!groq) {
@@ -15,9 +15,9 @@ const getGroqClient = () => {
   return groq;
 };
 
-export const analyzeOfferWithAI = async (fileBuffer: Buffer, mimeType: string) => {
+export const analyzeOfferWithAI = async (fileBuffer, mimeType) => {
   let text = '';
-  let messages: any[] = [];
+  let messages = [];
   let model = "llama-3.3-70b-versatile";
 
   const client = getGroqClient();
@@ -69,7 +69,7 @@ export const analyzeOfferWithAI = async (fileBuffer: Buffer, mimeType: string) =
       temperature: 0.2,
       response_format: model === "llama-3.2-11b-vision-preview" ? undefined : { type: "json_object" }
     });
-  } catch (apiErr: any) {
+  } catch (apiErr) {
     throw new Error(`Groq API Error: ${apiErr.message}`);
   }
 
@@ -80,10 +80,10 @@ export const analyzeOfferWithAI = async (fileBuffer: Buffer, mimeType: string) =
 
   try {
     let jsonStr = rawText;
-    if (jsonStr.includes('\`\`\`json')) {
-      jsonStr = jsonStr.split('\`\`\`json')[1].split('\`\`\`')[0].trim();
-    } else if (jsonStr.includes('\`\`\`')) {
-      jsonStr = jsonStr.split('\`\`\`')[1].split('\`\`\`')[0].trim();
+    if (jsonStr.includes('```json')) {
+      jsonStr = jsonStr.split('```json')[1].split('```')[0].trim();
+    } else if (jsonStr.includes('```')) {
+      jsonStr = jsonStr.split('```')[1].split('```')[0].trim();
     }
     const jsonResult = JSON.parse(jsonStr);
     

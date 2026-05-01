@@ -85,7 +85,7 @@ export function ResultsDashboard() {
               animate={{ width: `${result.riskScore}%` }}
               transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
               className={`h-full ${scoreBgColor}`} 
-            />
+              />
           </div>
           <p className="text-slate-400 text-xs mt-4 font-medium uppercase tracking-widest">
             {isHighRisk ? 'Critical Danger' : isMediumRisk ? 'Exercise Caution' : 'Looks Safe'}

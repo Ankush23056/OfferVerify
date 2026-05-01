@@ -1,9 +1,8 @@
-import { Request, Response } from 'express';
 import { analyzeOfferWithAI } from '../services/verify.service.js';
 import { Verification } from '../models/Verification.js';
 import mongoose from 'mongoose';
 
-export const verifyOffer = async (req: Request, res: Response) => {
+export const verifyOffer = async (req, res) => {
   try {
     const file = req.file;
 
@@ -32,7 +31,7 @@ export const verifyOffer = async (req: Request, res: Response) => {
     }
 
     res.json(result);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error in verifyOffer:', error);
     res.status(500).json({ error: error.message || 'Failed to verify offer' });
   }

@@ -9,7 +9,7 @@ import communityRoutes from './routes/community.routes.js';
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3001;
 
   // Connect to MongoDB if URI is provided
   if (process.env.MONGODB_URI) {

@@ -8,7 +8,7 @@ import { ResultsDashboard } from '../components/verify/ResultsDashboard';
 export function Verify() {
   const { status, file, errorMsg, uploadProgress, startVerification } = useVerificationStore();
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles.length > 0) {
       startVerification(acceptedFiles[0]);
     }
@@ -21,7 +21,7 @@ export function Verify() {
       'image/*': ['.png', '.jpg', '.jpeg', '.webp']
     },
     maxFiles: 1
-  } as any);
+  });
 
   return (
     <div className="relative min-h-[calc(100vh-5rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

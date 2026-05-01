@@ -1,12 +1,7 @@
-import { ReactNode } from 'react';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 
-interface LayoutProps {
-  children: ReactNode;
-}
-
-export function Layout({ children }: LayoutProps) {
+export function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col font-sans text-slate-100 bg-slate-950 selection:bg-indigo-500/30 selection:text-white relative overflow-x-hidden">
       {/* Mesh Gradient Background Elements */}

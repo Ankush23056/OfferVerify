@@ -1,30 +1,11 @@
 import { useState, useEffect } from 'react';
-import type { FormEvent } from 'react';
 import { Users, AlertCircle, CheckCircle2, MessageSquare, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 
-interface ScamReport {
-  _id: string;
-  userId: string;
-  reportDetails: string;
-  reportedAt: string;
-}
-
-interface CompanyData {
-  name: string;
-  scamReports: ScamReport[];
-}
-
-interface Verification {
-  _id: string;
-  riskScore: number;
-  createdAt: string;
-}
-
-export function CommunityReports({ companyName }: { companyName: string }) {
-  const [data, setData] = useState<{ company: CompanyData | null; verifications: Verification[] } | null>(null);
+export function CommunityReports({ companyName }) {
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   
   const [showReportForm, setShowReportForm] = useState(false);
   const [reportDetails, setReportDetails] = useState('');
@@ -46,20 +27,15 @@ export function CommunityReports({ companyName }: { companyName: string }) {
       const json = await res.json();
       setData(json);
       setError(null);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error(err);
-        setError(err.message);
-      } else {
-        console.error(err);
-        setError('An unknown error occurred');
-      }
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmitReport = async (e: FormEvent) => {
+  const handleSubmitReport = async (e) => {
     e.preventDefault();
     if (!reportDetails.trim()) return;
 
@@ -74,12 +50,8 @@ export function CommunityReports({ companyName }: { companyName: string }) {
       setReportDetails('');
       setShowReportForm(false);
       fetchData(); // Refresh data
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        alert(err.message);
-      } else {
-        alert('An unknown error occurred');
-      }
+    } catch (err) {
+      alert(err.message || 'An unknown error occurred');
     } finally {
       setSubmitting(false);
     }
@@ -96,7 +68,7 @@ export function CommunityReports({ companyName }: { companyName: string }) {
   const reports = data?.company?.scamReports || [];
   const verificationsCount = data?.verifications?.length || 0;
   const avgScore = verificationsCount > 0 
-    ? Math.round(data!.verifications.reduce((acc, v) => acc + v.riskScore, 0) / verificationsCount)
+    ? Math.round(data.verifications.reduce((acc, v) => acc + v.riskScore, 0) / verificationsCount)
     : null;
 
   return (

@@ -5,8 +5,20 @@ import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { connectDB } from './config/db.js';
 
+import rateLimit from 'express-rate-limit';
+import mongoose from 'mongoose';
+
 import verifyRoutes from './routes/verify.routes.js';
 import communityRoutes from './routes/community.routes.js';
+
+// Rate limiter for /verify route
+const verifyLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // limit each IP to 20 requests per windowMs
+  message: { error: 'Too many verification requests, please try again after 15 minutes' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 async function startServer() {
   const app = express();
@@ -24,6 +36,16 @@ async function startServer() {
     res.json({ status: 'ok' });
   });
 
+  app.get('/api/status', (req, res) => {
+    const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    res.json({
+      status: 'alive',
+      database: dbStatus,
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString()
+    });
+  });
+
   app.get('/api/debug-key', (req, res) => {
     const key = process.env.GROQ_API_KEY;
     if (!key) {
@@ -33,6 +55,7 @@ async function startServer() {
     }
   });
   
+  app.use('/api/verify-offer', verifyLimiter); // Apply rate limit to verify route
   app.use('/api', verifyRoutes);
   app.use('/api', communityRoutes);
 

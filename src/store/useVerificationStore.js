@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import API_BASE_URL from '../config/api';
 
 export const useVerificationStore = create((set, get) => ({
   status: 'idle',
@@ -55,7 +56,7 @@ export const useVerificationStore = create((set, get) => ({
           reject(new Error('Upload aborted'));
         });
 
-        xhr.open('POST', '/api/verify-offer');
+        xhr.open('POST', `${API_BASE_URL}/api/verify-offer`);
         xhr.send(formData);
       });
 

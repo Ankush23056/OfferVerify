@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users, AlertCircle, CheckCircle2, MessageSquare, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
+import API_BASE_URL from '../../config/api';
 
 export function CommunityReports({ companyName }) {
   const [data, setData] = useState(null);
@@ -22,7 +23,7 @@ export function CommunityReports({ companyName }) {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/companies/${encodeURIComponent(companyName)}`);
+      const res = await fetch(`${API_BASE_URL}/api/companies/${encodeURIComponent(companyName)}`);
       if (!res.ok) throw new Error('Failed to fetch community data');
       const json = await res.json();
       setData(json);
@@ -41,7 +42,7 @@ export function CommunityReports({ companyName }) {
 
     try {
       setSubmitting(true);
-      const res = await fetch('/api/reports', {
+      const res = await fetch(`${API_BASE_URL}/api/reports`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ companyName, reportDetails }),

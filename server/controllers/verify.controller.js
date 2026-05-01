@@ -7,7 +7,7 @@ export const verifyOffer = async (req, res) => {
     const file = req.file;
 
     if (!file) {
-      res.status(400).json({ error: 'No file uploaded' });
+      res.status(400).json({ error: 'No file uploaded or invalid file type' });
       return;
     }
 

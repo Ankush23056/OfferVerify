@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Search, ArrowLeft, Building2, MessageSquare, ShieldAlert, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import API_BASE_URL from '../config/api';
 
 export function SearchPage() {
   const { companyName } = useParams();
@@ -18,7 +19,7 @@ export function SearchPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/companies/${encodeURIComponent(companyName)}`);
+      const res = await fetch(`${API_BASE_URL}/api/companies/${encodeURIComponent(companyName)}`);
       if (!res.ok) throw new Error('Failed to fetch company data');
       const json = await res.json();
       setData(json);

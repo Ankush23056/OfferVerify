@@ -55,31 +55,33 @@ export const getCompanyData = async (req, res) => {
     let companyProfile = cachedProfile;
     let freshlyVerified = false;
 
-    // --- RAG Trigger: No cached profile AND no community history ---
+    // --- RAG Trigger: No Company profile in cache ---
+    // Fires regardless of whether verifications/reports exist.
+    // This handles the case where seeded data exists in Verification collection
+    // but the Company collection is empty (e.g. first deploy to a new MongoDB).
     if (!cachedProfile && process.env.EXA_API_KEY) {
       try {
-        console.log(`[RAG] No cache found for "${name}". Triggering Exa search...`);
+        console.log(`[RAG] No company profile cached for "${name}". Triggering Exa search...`);
         const ragData = await ragSearchCompany(name);
 
         if (ragData) {
-          // Save to MongoDB for instant future lookups
           companyProfile = await Company.create({
-            companyName: ragData.companyName,
+            companyName:     ragData.companyName,
             officialWebsite: ragData.officialWebsite,
             yearEstablished: ragData.yearEstablished,
-            headquarters: ragData.headquarters,
-            trustScore: ragData.trustScore,
-            redFlagSummary: ragData.redFlagSummary,
-            source: 'exa-rag',
+            headquarters:    ragData.headquarters,
+            trustScore:      ragData.trustScore,
+            redFlagSummary:  ragData.redFlagSummary,
+            source:          'exa-rag',
             freshlyVerified: true,
-            exaSearchedAt: new Date(),
+            exaSearchedAt:   new Date(),
           });
           freshlyVerified = true;
           console.log(`[RAG] Profile saved for "${ragData.companyName}" (trustScore: ${ragData.trustScore})`);
         }
       } catch (ragErr) {
-        // Non-fatal: RAG failure should not break the search response
         console.error('[RAG] Pipeline error:', ragErr.message);
+        // non-fatal — continue with null companyProfile
       }
     }
 

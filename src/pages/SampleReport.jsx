@@ -1,6 +1,7 @@
 import { ArrowLeft, ShieldAlert, AlertTriangle, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
+import samplePdf from '../assets/sample-offer.pdf';
 
 export function SampleReport() {
   return (
@@ -133,7 +134,7 @@ export function SampleReport() {
               <div className="bg-white p-2 sm:p-3 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 mb-4">
                 <div className="bg-slate-100 rounded-xl overflow-hidden border border-slate-200" style={{ height: '700px' }}>
                   <iframe 
-                    src="/sample-offer.pdf" 
+                    src={samplePdf} 
                     title="Sample Offer Letter PDF"
                     className="w-full h-full border-0"
                   />
@@ -143,7 +144,7 @@ export function SampleReport() {
               {/* Fallback link */}
               <div className="text-center">
                 <a 
-                  href="/sample-offer.pdf" 
+                  href={samplePdf} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 font-medium transition-colors bg-cyan-500/10 hover:bg-cyan-500/20 px-4 py-2 rounded-full border border-cyan-500/20"

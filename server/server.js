@@ -26,25 +26,34 @@ async function startServer() {
   // Connect to MongoDB
   await connectDB();
 
-  // CORS — allow the Vercel frontend and localhost dev server
+  // CORS — explicitly allow the production Vercel frontend + local dev
   const allowedOrigins = [
-    'http://localhost:5173',
+    'https://offer-verify.vercel.app',     // production frontend
+    'http://localhost:5173',               // Vite dev server
     'http://localhost:3000',
-    process.env.FRONTEND_URL, // set to your Vercel URL in Render env vars
+    process.env.FRONTEND_URL,             // override via Render env var if needed
   ].filter(Boolean);
 
   app.use(cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (curl, Postman, same-origin)
-      if (!origin || allowedOrigins.some(o => origin.startsWith(o))) {
+      // Allow same-origin requests (curl, Postman, Render health checks)
+      if (!origin) return callback(null, true);
+
+      const allowed = allowedOrigins.some(
+        (o) => origin === o || origin.startsWith(o.replace(/\/$/, ''))
+      );
+
+      if (allowed) {
         callback(null, true);
       } else {
-        callback(new Error(`CORS: origin ${origin} not allowed`));
+        console.warn(`[CORS] Blocked request from origin: ${origin}`);
+        callback(new Error(`CORS: origin "${origin}" is not allowed`));
       }
     },
     credentials: true,
   }));
   app.use(express.json());
+
 
   // API Routes
   app.get('/api/health', (req, res) => {

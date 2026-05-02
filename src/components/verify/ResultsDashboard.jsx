@@ -10,14 +10,14 @@ export function ResultsDashboard() {
 
   const { riskScore } = result;
   const isHighRisk = riskScore < 40;
-  const isMediumRisk = riskScore >= 40 && riskScore < 80;
-  const isLowRisk = riskScore >= 80;
+  const isMediumRisk = riskScore >= 40 && riskScore < 70;
+  const isLowRisk = riskScore >= 70;
 
   const recommendation = isHighRisk 
     ? "Critical Risk! Likely a scam." 
     : isMediumRisk 
-      ? "Exercise Caution. Review anomalies." 
-      : "Looks Legitimate and Safe.";
+      ? "Caution advised." 
+      : "Likely Legitimate.";
 
   const scoreColor = isHighRisk 
     ? 'text-red-500' 

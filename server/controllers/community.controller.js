@@ -61,7 +61,6 @@ export const getCompanyData = async (req, res) => {
     // but the Company collection is empty (e.g. first deploy to a new MongoDB).
     if (!cachedProfile && process.env.EXA_API_KEY) {
       try {
-        console.log(`[RAG] No company profile cached for "${name}". Triggering Exa search...`);
         const ragData = await ragSearchCompany(name);
 
         if (ragData) {
@@ -77,7 +76,6 @@ export const getCompanyData = async (req, res) => {
             exaSearchedAt:   new Date(),
           });
           freshlyVerified = true;
-          console.log(`[RAG] Profile saved for "${ragData.companyName}" (trustScore: ${ragData.trustScore})`);
         }
       } catch (ragErr) {
         console.error('[RAG] Pipeline error:', ragErr.message);

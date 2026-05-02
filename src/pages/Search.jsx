@@ -49,28 +49,7 @@ function TrustScoreRing({ score }) {
   );
 }
 
-/* ─── Risk Score Pill (for Verification history) ────────────────────────── */
-function RiskPill({ riskScore }) {
-  // riskScore: 0 = safest, 100 = most dangerous
-  const trustEquiv = 100 - riskScore;
-  const isGood = trustEquiv >= 75;
-  const isMid  = trustEquiv >= 45;
 
-  const cls = isGood
-    ? 'text-emerald-400'
-    : isMid
-    ? 'text-amber-400'
-    : 'text-red-400';
-
-  return (
-    <div>
-      <div className={`text-lg font-bold ${cls}`}>
-        {riskScore} <span className="text-xs text-slate-500 font-normal">/ 100</span>
-      </div>
-      <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Risk Score</div>
-    </div>
-  );
-}
 
 /* ─── Meta Info Chip ─────────────────────────────────────────────────────── */
 function MetaChip({ icon: Icon, label, href }) {
@@ -120,8 +99,7 @@ export function SearchPage() {
       if (!res.ok) throw new Error('Failed to fetch company data');
       const json = await res.json();
 
-      // Debug: log the full API response shape so we can verify the data
-      console.log('[Search] API response:', JSON.stringify(json, null, 2));
+
 
       setData(json);
     } catch (err) {
@@ -357,18 +335,23 @@ export function SearchPage() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {verifs.map((v) => (
-                      <div key={v._id}
-                        className="bg-black/20 border border-white/5 p-4 rounded-xl flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                          <span className="text-sm text-slate-300 font-medium">Offer Letter Scanned</span>
-                        </div>
-                        <div className="text-xs text-slate-500">
-                          {new Date(v.createdAt).toLocaleDateString()}
-                        </div>
-                      </div>
-                    ))}
+                     {verifs.map((v) => (
+                       <div key={v._id}
+                         className="bg-black/20 border border-white/5 p-4 rounded-xl flex items-center justify-between">
+                         <div className="flex items-center gap-2">
+                           <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                           <span className="text-sm text-slate-300 font-medium">Offer Letter Scanned</span>
+                         </div>
+                         <div className="flex items-center gap-3">
+                           <div className={`text-sm font-bold ${v.riskScore >= 75 ? 'text-emerald-400' : v.riskScore >= 45 ? 'text-amber-400' : 'text-red-400'}`}>
+                             {v.riskScore}/100
+                           </div>
+                           <div className="text-xs text-slate-500">
+                             {new Date(v.createdAt).toLocaleDateString()}
+                           </div>
+                         </div>
+                       </div>
+                     ))}
                   </div>
                 )}
               </div>

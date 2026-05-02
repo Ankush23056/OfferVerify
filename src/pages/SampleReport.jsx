@@ -1,7 +1,7 @@
 import { ArrowLeft, ShieldAlert, AlertTriangle, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import samplePdf from '../assets/sample-offer.pdf';
+import samplePdf from '../assets/test.pdf';
 
 export function SampleReport() {
   return (

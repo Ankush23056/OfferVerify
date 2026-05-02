@@ -130,14 +130,27 @@ export function SampleReport() {
               </div>
               
               {/* Paper-like container */}
-              <div className="bg-white p-2 sm:p-3 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10">
+              <div className="bg-white p-2 sm:p-3 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 mb-4">
                 <div className="bg-slate-100 rounded-xl overflow-hidden border border-slate-200" style={{ height: '700px' }}>
                   <iframe 
-                    src="/sample-offer.pdf#toolbar=0&navpanes=0&scrollbar=0" 
+                    src="/sample-offer.pdf" 
                     title="Sample Offer Letter PDF"
                     className="w-full h-full border-0"
                   />
                 </div>
+              </div>
+
+              {/* Fallback link */}
+              <div className="text-center">
+                <a 
+                  href="/sample-offer.pdf" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 font-medium transition-colors bg-cyan-500/10 hover:bg-cyan-500/20 px-4 py-2 rounded-full border border-cyan-500/20"
+                >
+                  <FileText className="w-4 h-4" />
+                  PDF not loading? Click here to view it directly
+                </a>
               </div>
             </motion.div>
           </div>

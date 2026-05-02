@@ -313,10 +313,10 @@ export function SearchPage() {
             )}
 
             {/* ════════ COMMUNITY + HISTORY GRID ════════ */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
 
               {/* ─ Community Reports ─ */}
-              <div className="lg:col-span-2 space-y-4">
+              <div className="space-y-4">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
                   <MessageSquare className="w-5 h-5 text-indigo-400" />
                   Community Reports
@@ -344,7 +344,7 @@ export function SearchPage() {
                 )}
               </div>
 
-              {/* ─ Verification History + CTA ─ */}
+              {/* ─ Verification History ─ */}
               <div className="space-y-4">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400" />
@@ -352,15 +352,18 @@ export function SearchPage() {
                 </h3>
 
                 {verifs.length === 0 ? (
-                  <div className="bg-white/5 border border-white/10 p-8 rounded-3xl text-center">
-                    <p className="text-slate-500 italic text-sm">No verification history yet.</p>
+                  <div className="bg-white/5 border border-white/10 p-10 rounded-3xl text-center">
+                    <p className="text-slate-500 text-sm">No verification history yet.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {verifs.map((v) => (
                       <div key={v._id}
                         className="bg-black/20 border border-white/5 p-4 rounded-xl flex items-center justify-between">
-                        <RiskPill riskScore={v.riskScore} />
+                        <div className="flex items-center gap-2">
+                          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                          <span className="text-sm text-slate-300 font-medium">Offer Letter Scanned</span>
+                        </div>
                         <div className="text-xs text-slate-500">
                           {new Date(v.createdAt).toLocaleDateString()}
                         </div>
@@ -368,28 +371,25 @@ export function SearchPage() {
                     ))}
                   </div>
                 )}
-
-                {/* Info note about risk score */}
-                <div className="flex gap-2 p-3 rounded-xl bg-white/5 border border-white/10">
-                  <Info className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
-                  <p className="text-slate-500 text-xs leading-relaxed">
-                    Risk Score: 0 = safest, 100 = most dangerous. This is derived from each individual offer letter scan.
-                  </p>
-                </div>
-
-                {/* CTA */}
-                <div className="bg-gradient-to-br from-indigo-600 to-blue-700 p-6 rounded-3xl shadow-xl">
-                  <h4 className="text-white font-bold mb-2">Have an offer letter?</h4>
-                  <p className="text-indigo-100 text-sm mb-4">
-                    Get a detailed AI analysis and trust score in under 60 seconds.
-                  </p>
-                  <Link to="/verify"
-                    className="w-full bg-white text-indigo-600 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-cyan-50 transition-colors">
-                    Verify now
-                  </Link>
-                </div>
               </div>
             </div>
+
+            {/* ════════ BIG CENTERED CTA ════════ */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              className="max-w-2xl mx-auto"
+            >
+              <div className="bg-gradient-to-br from-indigo-600 to-blue-700 p-10 rounded-[2rem] shadow-2xl text-center border border-indigo-500/30">
+                <h4 className="text-3xl text-white font-black mb-4 tracking-tight">Have an offer letter?</h4>
+                <p className="text-indigo-100 text-lg mb-8 max-w-md mx-auto leading-relaxed">
+                  Get a detailed AI analysis and trust score in under 60 seconds.
+                </p>
+                <Link to="/verify"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-indigo-600 px-10 py-4 rounded-2xl font-bold text-lg hover:bg-cyan-50 hover:scale-[1.02] transition-all shadow-xl">
+                  Verify now
+                </Link>
+              </div>
+            </motion.div>
           </div>
         )}
 

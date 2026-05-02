@@ -55,7 +55,15 @@ export const analyzeOfferWithAI = async (fileBuffer, mimeType, rawText = null) =
   }
 
   // 2. Call Groq API
-  const promptInstruction = `You are an expert in Indian employment law and job scams. Analyze this offer letter for: registration fees, training deposits, suspicious email domains, missing CIN/Registration numbers, and unrealistic salary-to-company-size ratios. Return a JSON object with: companyName (string), riskScore (0-100), redFlags (array), warnings (array), and positives (array). Do not wrap the JSON in markdown code blocks, return raw JSON only.`;
+  const promptInstruction = `You are an expert in Indian employment law and job scams. Analyze this offer letter for: registration fees, training deposits, suspicious email domains, missing CIN/Registration numbers, and unrealistic salary-to-company-size ratios.
+
+CRITICAL SCORING LOGIC (Calculate a TRUST SCORE where 100 = SAFEST, 0 = MOST DANGEROUS):
+- Default the score to 50 (neutral) and move up or down based on evidence.
+- INCREASE the score significantly (towards 80-100) if positive evidence is found (e.g., valid CIN, professional domain, known legitimate corporate entity like Scaler, Google, TCS).
+- DECREASE the score (towards 0-30) ONLY if there is hard evidence of a scam (e.g., payment requests for registration/laptops, generic @gmail.com domains from an alleged enterprise, explicit threats).
+- Do not assign a low score (<40) just because a document is simple or lacks details; reserve low scores for clear scam indicators.
+
+Return a JSON object with: companyName (string), riskScore (IMPORTANT: put your 0-100 TRUST SCORE here), redFlags (array), warnings (array), and positives (array). Do not wrap the JSON in markdown code blocks, return raw JSON only.`;
   
   if (messages[0].content && Array.isArray(messages[0].content)) {
     messages[0].content.unshift({ type: "text", text: promptInstruction });

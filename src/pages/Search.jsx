@@ -118,7 +118,12 @@ export function SearchPage() {
       clearTimeout(phaseTimer);
 
       if (!res.ok) throw new Error('Failed to fetch company data');
-      setData(await res.json());
+      const json = await res.json();
+
+      // Debug: log the full API response shape so we can verify the data
+      console.log('[Search] API response:', JSON.stringify(json, null, 2));
+
+      setData(json);
     } catch (err) {
       setError(err.message || 'An unknown error occurred');
     } finally {
@@ -127,13 +132,19 @@ export function SearchPage() {
     }
   };
 
-  const profile  = data?.companyProfile;
-  const reports  = data?.reports  || [];
-  const verifs   = data?.verifications || [];
-  const isEmpty  = !loading && !error && !profile && reports.length === 0 && verifs.length === 0;
+  // Safely destructure — the API returns { companyProfile, reports, verifications, freshlyVerified }
+  const profile  = data?.companyProfile ?? null;
+  const reports  = Array.isArray(data?.reports)        ? data.reports        : [];
+  const verifs   = Array.isArray(data?.verifications)  ? data.verifications  : [];
+
+  // isEmpty = truly nothing to show: no profile, no reports, no verifications
+  const hasContent = !!profile || reports.length > 0 || verifs.length > 0;
+  const isEmpty    = !loading && !error && !hasContent;
 
   const websiteHref = profile?.officialWebsite
-    ? (profile.officialWebsite.startsWith('http') ? profile.officialWebsite : `https://${profile.officialWebsite}`)
+    ? (profile.officialWebsite.startsWith('http')
+        ? profile.officialWebsite
+        : `https://${profile.officialWebsite}`)
     : null;
 
   return (
@@ -226,7 +237,7 @@ export function SearchPage() {
         )}
 
         {/* ── Results ── */}
-        {!loading && !error && !isEmpty && (
+        {!loading && !error && hasContent && (
           <div className="space-y-8">
 
             {/* ════════ COMPANY PROFILE CARD ════════ */}

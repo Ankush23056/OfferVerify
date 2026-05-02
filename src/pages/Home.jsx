@@ -62,10 +62,10 @@ export function Home() {
                 <Upload className="w-5 h-5" />
                 Verify your offer free
               </Link>
-              <button className="w-full sm:w-auto flex items-center justify-center gap-2 backdrop-blur-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 px-8 py-4 rounded-xl text-lg font-semibold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer">
+              <Link to="/sample" className="w-full sm:w-auto flex items-center justify-center gap-2 backdrop-blur-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 px-8 py-4 rounded-xl text-lg font-semibold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer">
                 See sample report
                 <ArrowRight className="w-5 h-5" />
-              </button>
+              </Link>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 text-sm text-slate-400 font-medium">

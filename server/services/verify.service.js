@@ -75,13 +75,13 @@ export const analyzeOfferWithAI = async (fileBuffer, mimeType, rawText = null) =
     throw new Error(`Groq API Error: ${apiErr.message}`);
   }
 
-  const rawText = response.choices[0]?.message?.content;
-  if (!rawText) {
+  const aiRawResponse = response.choices[0]?.message?.content;
+  if (!aiRawResponse) {
     throw new Error('AI returned empty response');
   }
 
   try {
-    let jsonStr = rawText;
+    let jsonStr = aiRawResponse;
     if (jsonStr.includes('```json')) {
       jsonStr = jsonStr.split('```json')[1].split('```')[0].trim();
     } else if (jsonStr.includes('```')) {

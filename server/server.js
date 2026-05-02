@@ -26,8 +26,24 @@ async function startServer() {
   // Connect to MongoDB
   await connectDB();
 
-  // Middleware
-  app.use(cors());
+  // CORS — allow the Vercel frontend and localhost dev server
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    process.env.FRONTEND_URL, // set to your Vercel URL in Render env vars
+  ].filter(Boolean);
+
+  app.use(cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (curl, Postman, same-origin)
+      if (!origin || allowedOrigins.some(o => origin.startsWith(o))) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS: origin ${origin} not allowed`));
+      }
+    },
+    credentials: true,
+  }));
   app.use(express.json());
 
   // API Routes
@@ -124,12 +140,10 @@ async function startServer() {
       res.status(500).json({ error: err.message });
     }
   });
-
-
-  
-  app.use('/api/verify-offer', verifyLimiter); // Apply rate limit to verify route
+  app.use('/api/verify-offer', verifyLimiter);
   app.use('/api', verifyRoutes);
   app.use('/api', communityRoutes);
+
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production') {

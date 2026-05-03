@@ -58,7 +58,7 @@ This project demonstrates expertise in AI integration (Exa & Groq), Full-Stack d
 
 **Ankush Kumar** | Full-Stack Developer  
 📍 Mumbai, India  
-🌐 [Portfolio](https://ankush-dev.netlify.app/)
+🌐 [Portfolio](https://dev-ankush.vercel.app/)
 
 ---
 

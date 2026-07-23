@@ -13,15 +13,15 @@ export function Navbar() {
   ];
 
   return (
-    <header className="fixed top-0 w-full z-50 border-b border-white/10 backdrop-blur-md bg-white/5">
+    <header className="fixed top-0 w-full z-50 border-b border-vd-border bg-vd-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-indigo-600 rounded-lg flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-vd-accent rounded-lg flex items-center justify-center">
+              <ShieldCheck className="w-5 h-5 text-vd-primary" />
             </div>
-            <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">OfferVerify</span>
+            <span className="text-xl font-bold tracking-tight text-vd-primary">OfferVerify</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -30,7 +30,7 @@ export function Navbar() {
               <Link
                 key={link.name}
                 to={link.href}
-                className={`text-sm font-medium transition-colors ${link.className || 'text-slate-300 hover:text-white'}`}
+                className={`text-sm font-medium transition-colors ${link.className || 'text-vd-secondary hover:text-vd-primary'}`}
               >
                 {link.name}
               </Link>
@@ -39,7 +39,7 @@ export function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/verify" className="px-5 py-2.5 bg-white text-slate-950 text-sm font-semibold rounded-full hover:bg-cyan-50 transition-colors shadow-lg shadow-white/10 cursor-pointer text-center block">
+            <Link to="/verify" className="px-5 py-2.5 bg-vd-accent text-vd-primary text-sm font-semibold rounded-full hover:scale-105 hover:opacity-90 transition-all shadow-lg shadow-vd-accent/20 cursor-pointer text-center block">
               Verify offer
             </Link>
           </div>
@@ -48,7 +48,7 @@ export function Navbar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-slate-300 hover:text-white focus:outline-none cursor-pointer"
+              className="text-vd-secondary hover:text-vd-primary focus:outline-none cursor-pointer"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -58,20 +58,20 @@ export function Navbar() {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-slate-900 border-t border-white/10 px-4 pt-2 pb-6 space-y-4 fixed w-full shadow-lg">
+        <div className="md:hidden bg-vd-surface border-t border-vd-border px-4 pt-2 pb-6 space-y-4 fixed w-full shadow-lg">
           <div className="flex flex-col space-y-3">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
-                className={`text-base font-medium transition-colors block px-2 py-1 ${link.className || 'text-slate-300 hover:text-white'}`}
+                className={`text-base font-medium transition-colors block px-2 py-1 ${link.className || 'text-vd-secondary hover:text-vd-primary'}`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.name}
               </Link>
             ))}
-            <div className="border-t border-white/10 pt-3 flex flex-col space-y-3">
-              <Link to="/verify" onClick={() => setIsMobileMenuOpen(false)} className="bg-gradient-to-r from-cyan-500 to-indigo-600 text-white hover:brightness-110 text-center px-4 py-3 rounded-xl text-base font-medium transition-all w-full shadow-lg block">
+            <div className="border-t border-vd-border pt-3 flex flex-col space-y-3">
+              <Link to="/verify" onClick={() => setIsMobileMenuOpen(false)} className="bg-vd-accent text-vd-primary hover:opacity-90 text-center px-4 py-3 rounded-xl text-base font-medium transition-colors w-full block">
                 Verify offer
               </Link>
             </div>

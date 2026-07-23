@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  
+  --color-vd-bg: #1B1222;
+  --color-vd-surface: #2C1A38;
+  --color-vd-border: #502D55;
+  --color-vd-accent: #935073;
+  --color-vd-primary: #F8F4E9;
+  --color-vd-secondary: #F6DBC0;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    background-color: var(--color-vd-bg);
+    color: var(--color-vd-secondary);
+  }
+}

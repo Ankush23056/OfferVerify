@@ -31,6 +31,8 @@ async function startServer() {
     'https://offer-verify.vercel.app',     // production frontend
     'http://localhost:5173',               // Vite dev server
     'http://localhost:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3001',
     process.env.FRONTEND_URL,             // override via Render env var if needed
   ].filter(Boolean);
 

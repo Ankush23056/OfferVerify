@@ -1,11 +1,20 @@
-import { Upload, ArrowRight, BadgeInfo, CheckCircle2, FileText, AlertTriangle, Sparkles, Brain, ShieldCheck, FileSearch, Building2, Users, Globe, TrendingUp, Bot, IndianRupee, Mail, Clock, VideoOff, MapPin, AlertCircle, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { Upload, ArrowRight, BadgeInfo, CheckCircle2, FileText, AlertTriangle, FileSearch, Building2, Users, Globe, TrendingUp, Bot, IndianRupee, Mail, Clock, VideoOff, MapPin, AlertCircle, ChevronDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+const MotionLink = motion.create(Link);
+import { motion } from 'motion/react';
 import { GlobalScamSearch } from '../components/verify/GlobalScamSearch';
 import API_BASE_URL from '../config/api';
 
 export function Home() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } }
+  };
   const [openFaq, setOpenFaq] = useState(null);
   const [stats, setStats] = useState({ verifications: '10k+', reports: '2.5k+', moneySaved: '₹38Cr' });
 
@@ -30,45 +39,39 @@ export function Home() {
 
   return (
     <>
-      <div className="relative min-h-[calc(100vh-5rem)] flex items-center overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 lg:py-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+      <div className="relative min-h-[calc(100vh-5rem)] flex items-center overflow-hidden bg-vd-bg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-24 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           
           {/* Left Column: Copy & CTAs */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex-1 text-center lg:text-left pt-10 lg:pt-0"
-          >
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="flex-1 text-center lg:text-left pt-10 lg:pt-0">
             
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold mb-6 shadow-sm">
-              <Sparkles className="w-4 h-4 text-indigo-400" />
-              <span>NEW: AI-powered scam detection · Built by a victim, for job seekers</span>
-            </div>
+            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-vd-surface border border-vd-border text-vd-secondary/70 text-xs font-semibold mb-6">
+              <span className="font-sans">Built by a victim, for job seekers</span>
+            </motion.div>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-6">
+            <motion.h1 variants={itemVariants} className="text-5xl sm:text-6xl lg:text-7xl font-bold font-serif text-vd-primary tracking-tight leading-[1.1] mb-6">
               Don't get scammed.<br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">Verify your job offer.</span>
-            </h1>
+              <span className="text-vd-accent">Verify your job offer.</span>
+            </motion.h1>
             
-            <p className="text-lg sm:text-xl text-slate-400 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Upload your offer letter and we'll instantly flag scam patterns, fake
+            <motion.p variants={itemVariants} className="text-lg sm:text-xl font-sans text-vd-secondary/70 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              Upload your offer letter and we'll identify scam patterns, fake
               companies, and illegal money demands — so you never get tricked
-              into a fake job again.
-            </p>
+              into a fake job.
+            </motion.p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
-              <Link to="/verify" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold rounded-xl shadow-[0_0_40px_rgba(79,70,229,0.3)] hover:shadow-[0_0_60px_rgba(79,70,229,0.4)] transition-all hover:-translate-y-0.5 cursor-pointer">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
+              <MotionLink whileHover={{ scale: 1.02 }} to="/verify" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-vd-accent text-vd-primary font-bold font-serif rounded-xl hover:bg-vd-accent/90 active:scale-95 transition-all duration-300 cursor-pointer">
                 <Upload className="w-5 h-5" />
                 Verify your offer free
-              </Link>
-              <Link to="/sample" className="w-full sm:w-auto flex items-center justify-center gap-2 backdrop-blur-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 px-8 py-4 rounded-xl text-lg font-semibold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer">
+              </MotionLink>
+              <MotionLink whileHover={{ scale: 1.02 }} to="/sample" className="w-full sm:w-auto flex items-center justify-center gap-2 bg-vd-surface border border-vd-border text-vd-primary hover:bg-vd-surface/80 active:scale-95 px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 cursor-pointer">
                 See sample report
                 <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
+              </MotionLink>
+            </motion.div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 text-sm text-slate-400 font-medium">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 text-sm text-vd-secondary/70 font-medium">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                 <span>Free forever</span>
@@ -81,26 +84,21 @@ export function Home() {
                 <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                 <span>100% private</span>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Right Column: Hero Graphic / Mock Report */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex-1 w-full max-w-lg lg:max-w-none relative mt-10 lg:mt-0"
-          >
+          <motion.div variants={itemVariants} initial="hidden" animate="visible" className="flex-1 w-full max-w-lg lg:max-w-none relative mt-10 lg:mt-0">
             {/* Main Card */}
-            <div className="backdrop-blur-xl bg-white/10 border border-white/20 p-6 sm:p-8 rounded-2xl shadow-2xl relative transform transition-transform hover:-translate-y-1 duration-500">
+            <div className="bg-vd-surface border border-vd-border p-6 sm:p-8 rounded-2xl relative hover:border-vd-accent hover:-translate-y-[2px] transition-all duration-300">
               
               {/* Inner Header */}
-              <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-                <div className="flex items-center gap-2 text-indigo-300 font-medium">
+              <div className="flex justify-between items-center mb-8 border-b border-vd-border pb-4">
+                <div className="flex items-center gap-2 text-vd-accent font-medium">
                   <FileText className="w-5 h-5" />
                   <span>Verification Report</span>
                 </div>
-                <span className="px-3 py-1 bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-bold rounded-full tracking-wide">
+                <span className="px-3 py-1 bg-rose-400/10 text-rose-400 border border-rose-400/20 text-xs font-bold font-serif rounded-full tracking-wide">
                   HIGH RISK
                 </span>
               </div>
@@ -108,43 +106,43 @@ export function Home() {
               {/* Score */}
               <div className="mb-8">
                 <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-6xl font-black text-red-400 tracking-tighter">35</span>
-                  <span className="text-slate-400 font-medium">/ 100 trust score</span>
+                  <span className="text-6xl font-black text-rose-400 tracking-tighter">35</span>
+                  <span className="text-vd-secondary/70 font-medium">/ 100 trust score</span>
                 </div>
                 {/* Progress bar visual */}
-                <div className="h-3 w-full bg-white/10 rounded-full overflow-hidden flex">
-                  <div className="h-full bg-red-500 w-[35%]" />
+                <div className="h-3 w-full bg-vd-border rounded-full overflow-hidden flex">
+                  <motion.div initial={{ width: 0 }} whileInView={{ width: '35%' }} transition={{ duration: 0.8, ease: 'easeOut' }} viewport={{ once: true }} className="h-full bg-rose-400" />
                 </div>
               </div>
 
               {/* Finding Items */}
               <div className="space-y-3 mb-8">
                 {/* Red Item 1 */}
-                <div className="flex space-x-3 bg-red-500/10 border border-red-500/20 p-4 rounded-xl">
-                  <AlertTriangle className="text-red-400 w-5 h-5 shrink-0 mt-0.5" />
-                  <span className="text-slate-200 font-medium">Asks for ₹5,000 "registration fee" — illegal</span>
+                <div className="flex space-x-3 bg-rose-400/10 border border-rose-400/20 p-4 rounded-xl">
+                  <AlertTriangle className="text-rose-400 w-5 h-5 shrink-0 mt-0.5" />
+                  <span className="text-vd-primary font-medium">Asks for ₹5,000 "registration fee" — illegal</span>
                 </div>
                 {/* Red Item 2 */}
-                <div className="flex space-x-3 bg-red-500/10 border border-red-500/20 p-4 rounded-xl">
-                  <AlertTriangle className="text-red-400 w-5 h-5 shrink-0 mt-0.5" />
-                  <span className="text-slate-200 font-medium">Email is @gmail.com, not company domain</span>
+                <div className="flex space-x-3 bg-rose-400/10 border border-rose-400/20 p-4 rounded-xl">
+                  <AlertTriangle className="text-rose-400 w-5 h-5 shrink-0 mt-0.5" />
+                  <span className="text-vd-primary font-medium">Email is @gmail.com, not company domain</span>
                 </div>
                 {/* Yellow Item */}
-                <div className="flex space-x-3 bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl">
+                <div className="flex space-x-3 bg-amber-400/10 border border-amber-400/20 p-4 rounded-xl">
                   <BadgeInfo className="text-amber-400 w-5 h-5 shrink-0 mt-0.5" />
-                  <span className="text-slate-200 font-medium">No company CIN / registration number</span>
+                  <span className="text-vd-primary font-medium">No company CIN / registration number</span>
                 </div>
                 {/* Green Item */}
-                <div className="flex space-x-3 bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl">
+                <div className="flex space-x-3 bg-emerald-400/10 border border-emerald-400/20 p-4 rounded-xl">
                   <CheckCircle2 className="text-emerald-400 w-5 h-5 shrink-0 mt-0.5" />
-                  <span className="text-slate-200 font-medium">Professional formatting maintained</span>
+                  <span className="text-vd-primary font-medium">Professional formatting maintained</span>
                 </div>
               </div>
 
               {/* Summary Recommendation */}
-              <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl">
-                <p className="text-slate-200 text-sm">
-                  <span className="font-semibold text-red-400 mr-2">Recommendation:</span>
+              <div className="bg-rose-400/10 border border-rose-400/20 p-4 rounded-xl">
+                <p className="text-vd-primary text-sm">
+                  <span className="font-semibold text-rose-400 mr-2">Recommendation:</span>
                   Do not accept. Multiple scam indicators detected.
                 </p>
               </div>
@@ -157,153 +155,74 @@ export function Home() {
       <GlobalScamSearch />
 
       {/* Stats Section */}
-      <section className="relative z-10 border-y border-white/10 backdrop-blur-md bg-white/5 py-12">
+      <section className="relative z-10 border-y border-vd-border bg-vd-surface py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-white/10">
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="text-center px-4"
-            >
-              <div className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 mb-2 tracking-tight">{stats.verifications}</div>
-              <div className="text-slate-400 font-medium text-sm lg:text-base">Offers verified</div>
-            </motion.div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-zinc-800">
+            <div className="text-center px-4">
+              <div className="text-4xl lg:text-5xl font-bold font-serif text-vd-primary mb-2 tracking-tight">{stats.verifications}</div>
+              <div className="text-vd-secondary/70 font-medium text-sm lg:text-base">Offers verified</div>
+            </div>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-center px-4"
-            >
-              <div className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 mb-2 tracking-tight">{stats.reports}</div>
-              <div className="text-slate-400 font-medium text-sm lg:text-base">Scams reported</div>
-            </motion.div>
+            <div className="text-center px-4">
+              <div className="text-4xl lg:text-5xl font-bold font-serif text-vd-primary mb-2 tracking-tight">{stats.reports}</div>
+              <div className="text-vd-secondary/70 font-medium text-sm lg:text-base">Scams reported</div>
+            </div>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-center px-4"
-            >
-              <div className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 mb-2 tracking-tight">{stats.moneySaved}</div>
-              <div className="text-slate-400 font-medium text-sm lg:text-base">Saved by job seekers</div>
-            </motion.div>
+            <div className="text-center px-4">
+              <div className="text-4xl lg:text-5xl font-bold font-serif text-vd-primary mb-2 tracking-tight">{stats.moneySaved}</div>
+              <div className="text-vd-secondary/70 font-medium text-sm lg:text-base">Saved by job seekers</div>
+            </div>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="text-center px-4"
-            >
-              <div className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 mb-2 tracking-tight">100%</div>
-              <div className="text-slate-400 font-medium text-sm lg:text-base">Free for job seekers</div>
-            </motion.div>
+            <div className="text-center px-4">
+              <div className="text-4xl lg:text-5xl font-bold font-serif text-vd-primary mb-2 tracking-tight">100%</div>
+              <div className="text-vd-secondary/70 font-medium text-sm lg:text-base">Free for job seekers</div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How it works section */}
-      <section id="how-it-works" className="relative z-10 py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-cyan-400 font-semibold text-sm tracking-wide uppercase">How it works</span>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mt-4 mb-6 tracking-tight">
-              From offer to verdict in 3 steps
-            </h2>
-            <p className="text-lg text-slate-400">
-              No login. No fees. Just answers when you need them most.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Step 1 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="relative p-8 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 shadow-lg hover:shadow-xl hover:bg-white/10 transition-all"
-            >
-              <div className="absolute -top-4 left-8">
-                <span className="bg-gradient-to-r from-cyan-500 to-indigo-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
-                  STEP 1
-                </span>
-              </div>
-              <div className="w-12 h-12 bg-white/10 text-cyan-400 rounded-2xl flex items-center justify-center mb-6 mt-2 border border-white/5">
-                <Upload className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Upload your offer</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Drop the PDF, image, or paste the text. Works with screenshots from WhatsApp too.
-              </p>
-            </motion.div>
-
-            {/* Step 2 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="relative p-8 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 shadow-lg hover:shadow-xl hover:bg-white/10 transition-all"
-            >
-              <div className="absolute -top-4 left-8">
-                <span className="bg-gradient-to-r from-cyan-500 to-indigo-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
-                  STEP 2
-                </span>
-              </div>
-              <div className="w-12 h-12 bg-white/10 text-indigo-400 rounded-2xl flex items-center justify-center mb-6 mt-2 border border-white/5">
-                <Brain className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">AI scans instantly</h3>
-              <p className="text-slate-400 leading-relaxed">
-                We check 20+ scam patterns, verify the company online, and cross-reference our scam database.
-              </p>
-            </motion.div>
-
-            {/* Step 3 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative p-8 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 shadow-lg hover:shadow-xl hover:bg-white/10 transition-all"
-            >
-              <div className="absolute -top-4 left-8">
-                <span className="bg-gradient-to-r from-cyan-500 to-indigo-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
-                  STEP 3
-                </span>
-              </div>
-              <div className="w-12 h-12 bg-white/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 mt-2 border border-white/5">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Get a clear verdict</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Trust score, red flags, and a plain-English recommendation — in under a minute.
-              </p>
-            </motion.div>
+      {/* Concrete Proof Section */}
+      <section id="proof" className="relative z-10 py-24 bg-vd-bg">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <span className="text-vd-accent font-semibold text-sm tracking-wide uppercase">Real Results</span>
+          <h2 className="text-4xl lg:text-5xl font-bold font-serif text-vd-primary mt-4 mb-6 tracking-tight">
+            See exactly what we find
+          </h2>
+          <p className="text-lg text-vd-secondary/70 mb-12">
+            Upload your offer letter and get a detailed, line-by-line breakdown of any suspicious clauses.
+          </p>
+          
+          <div className="bg-vd-surface border border-vd-border rounded-2xl p-4 shadow-xl mx-auto aspect-video flex items-center justify-center text-vd-secondary/50 overflow-hidden relative">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2000')] opacity-30 bg-cover bg-center"></div>
+            <div className="relative z-10 bg-vd-bg/80 p-8 rounded-xl border border-vd-border max-w-md">
+                <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
+                <h3 className="text-2xl font-bold font-serif text-vd-primary mb-2">Detailed Analysis Report</h3>
+                <p className="text-vd-secondary/70">Our system scans for illegal clauses, mismatched domains, and missing corporate registrations.</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative z-10 py-20 lg:py-32 border-t border-white/5 bg-slate-900/20">
+      <section id="features" className="relative z-10 py-24 border-t border-vd-border bg-vd-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-indigo-400 font-semibold text-sm tracking-wide uppercase">Features</span>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mt-4 mb-6 tracking-tight">
-              Everything a scammer hopes you don't have
+            <span className="text-vd-accent font-semibold text-sm tracking-wide uppercase">Features</span>
+            <h2 className="text-4xl lg:text-5xl font-bold font-serif text-vd-primary mt-4 mb-6 tracking-tight">
+              What we check for
             </h2>
-            <p className="text-lg text-slate-400">
+            <p className="text-lg text-vd-secondary/70">
               A complete toolkit to verify any job offer before you commit, pay, or quit your current job.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <motion.div 
+            initial="hidden" 
+            whileInView="visible" 
+            viewport={{ once: true, margin: "-50px" }} 
+            variants={containerVariants} 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          >
             {[
               {
                 icon: FileSearch,
@@ -337,40 +256,43 @@ export function Home() {
               }
             ].map((feature, i) => (
               <motion.div 
+                variants={itemVariants}
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="p-8 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 shadow-lg hover:bg-white/10 transition-all group"
+                className="p-8 rounded-3xl bg-vd-surface border border-vd-border hover:bg-vd-surface/80 hover:border-vd-accent hover:-translate-y-[2px] transition-all duration-300"
               >
-                <div className="w-12 h-12 bg-white/10 text-cyan-400 rounded-xl flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all">
+                <div className="w-12 h-12 bg-vd-accent/10 text-vd-accent rounded-xl flex items-center justify-center mb-6 border border-mauve/20">
                   <feature.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                <p className="text-slate-400 leading-relaxed text-sm lg:text-base">
+                <h3 className="text-xl font-bold font-serif text-vd-primary mb-3">{feature.title}</h3>
+                <p className="text-vd-secondary/70 leading-relaxed text-sm lg:text-base">
                   {feature.desc}
                 </p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Red Flags Section */}
-      <section id="red-flags" className="relative z-10 py-20 lg:py-32 border-t border-white/5">
+      <section id="red-flags" className="relative z-10 py-24 border-t border-vd-border bg-vd-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-red-400 font-semibold text-sm tracking-wide uppercase">Red flags we catch</span>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mt-4 mb-6 tracking-tight">
-              If you see any of these, stop.
+            <span className="text-rose-400 font-semibold text-sm tracking-wide uppercase">Red flags we catch</span>
+            <h2 className="text-4xl lg:text-5xl font-bold font-serif text-vd-primary mt-4 mb-6 tracking-tight">
+              Common red flags
             </h2>
-            <p className="text-lg text-slate-400">
+            <p className="text-lg text-vd-secondary/70">
               These are the exact patterns that have scammed thousands of Indian job seekers.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <motion.div 
+            initial="hidden" 
+            whileInView="visible" 
+            viewport={{ once: true, margin: "-50px" }} 
+            variants={containerVariants} 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          >
             {[
               {
                 icon: IndianRupee,
@@ -404,116 +326,42 @@ export function Home() {
               }
             ].map((flag, i) => (
               <motion.div 
+                variants={itemVariants}
                 key={i}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="flex gap-5 p-6 sm:p-8 rounded-3xl bg-red-500/5 border border-red-500/20 hover:bg-red-500/10 transition-colors"
+                className="flex gap-5 p-6 sm:p-8 rounded-3xl bg-vd-surface border border-vd-border hover:bg-vd-surface/80 hover:border-vd-accent hover:-translate-y-[2px] transition-all duration-300"
               >
                 <div className="shrink-0 mt-0.5">
-                  <flag.icon className="w-6 h-6 text-red-400" />
+                  <flag.icon className="w-6 h-6 text-rose-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-2 leading-tight">{flag.title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed">
+                  <h3 className="text-lg font-bold font-serif text-vd-primary mb-2 leading-tight">{flag.title}</h3>
+                  <p className="text-vd-secondary/70 text-sm leading-relaxed">
                     {flag.desc}
                   </p>
                 </div>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="relative z-10 py-20 lg:py-32 border-t border-white/5 bg-slate-900/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-indigo-400 font-semibold text-sm tracking-wide uppercase">Real stories</span>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mt-4 tracking-tight">
-              Built by someone who got scammed too
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="p-8 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 shadow-lg flex flex-col justify-between h-full"
-            >
-              <p className="text-slate-300 leading-relaxed mb-8 text-lg">
-                "I almost paid ₹7,500 for a 'laptop deposit'. OfferVerify flagged it instantly — the company didn't even exist on MCA."
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-inner">
-                  P
-                </div>
-                <div>
-                  <h4 className="text-white font-bold">Priya S.</h4>
-                  <p className="text-slate-400 text-sm">Final-year student, Pune</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="p-8 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 shadow-lg flex flex-col justify-between h-full"
-            >
-              <p className="text-slate-300 leading-relaxed mb-8 text-lg">
-                "Got an offer for ₹12 LPA from a company I'd never heard of. Trust score: 22/100. Saved me from quitting my actual job."
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-inner">
-                  R
-                </div>
-                <div>
-                  <h4 className="text-white font-bold">Rahul M.</h4>
-                  <p className="text-slate-400 text-sm">Backend dev, Bangalore</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="p-8 rounded-3xl backdrop-blur-md bg-white/5 border border-white/10 shadow-lg flex flex-col justify-between h-full"
-            >
-              <p className="text-slate-300 leading-relaxed mb-8 text-lg">
-                "Built this because it happened to me. Lost ₹5,000 to a fake offer. Never again — for me or anyone else."
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-inner">
-                  F
-                </div>
-                <div>
-                  <h4 className="text-white font-bold">Founder</h4>
-                  <p className="text-slate-400 text-sm">OfferVerify</p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="relative z-10 py-20 lg:py-32 border-t border-white/5">
+      <section id="faq" className="relative z-10 py-24 border-t border-vd-border bg-vd-bg">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="text-cyan-400 font-semibold text-sm tracking-wide uppercase">FAQ</span>
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mt-4 tracking-tight">
+            <span className="text-vd-accent font-semibold text-sm tracking-wide uppercase">FAQ</span>
+            <h2 className="text-4xl lg:text-5xl font-bold font-serif text-vd-primary mt-4 tracking-tight">
               Common questions
             </h2>
           </div>
 
-          <div className="space-y-4">
+          <motion.div 
+            initial="hidden" 
+            whileInView="visible" 
+            viewport={{ once: true, margin: "-50px" }} 
+            variants={containerVariants} 
+            className="space-y-4"
+          >
             {[
               {
                 q: "Is OfferVerify really free?",
@@ -533,70 +381,48 @@ export function Home() {
               },
               {
                 q: "How accurate is the AI?",
-                a: "Our AI is trained on thousands of verified scam patterns in the Indian job market and cross-references live data like MCA registration and domain age. It is highly accurate at catching patterns humans miss."
+                a: "Our system is trained on thousands of verified scam patterns in the Indian job market and cross-references live data like MCA registration and domain age. It is highly accurate at catching patterns humans miss."
               }
             ].map((faq, i) => (
               <motion.div 
+                variants={itemVariants}
                 key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.1 }}
-                className="rounded-2xl backdrop-blur-md bg-white/5 border border-white/10 overflow-hidden"
+                className="rounded-2xl bg-vd-surface border border-vd-border hover:border-vd-accent hover:-translate-y-[2px] transition-all duration-300 overflow-hidden"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none cursor-pointer"
+                  className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none cursor-pointer hover:bg-vd-surface/80 transition-colors"
                 >
-                  <span className="text-white font-medium text-lg">{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`} />
+                  <span className="text-vd-primary font-medium text-lg">{faq.q}</span>
+                  <ChevronDown className={`w-5 h-5 text-vd-secondary/70 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`} />
                 </button>
-                <AnimatePresence>
-                  {openFaq === i && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="px-6 pb-5 text-slate-400 leading-relaxed"
-                    >
-                      {faq.a}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {openFaq === i && (
+                  <div className="px-6 pb-5 text-vd-secondary/70 leading-relaxed border-t border-vd-border pt-4">
+                    {faq.a}
+                  </div>
+                )}
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Bottom CTA */}
-      <section className="relative z-10 py-20 pb-32">
+      <section className="relative z-10 py-24 bg-vd-bg">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-10 lg:p-16 rounded-[2.5rem] relative overflow-hidden backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl text-center"
-          >
-            {/* Inner Glow/Mesh for CTA */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-600 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
-
-            <div className="relative z-10">
-              <h2 className="text-4xl lg:text-6xl font-extrabold text-white tracking-tight mb-6 leading-[1.1]">
-                Got an offer? <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">Verify it before you celebrate.</span>
-              </h2>
-              <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
-                Takes 60 seconds. No signup. Could save you ₹5,000 — or your career.
-              </p>
-              <Link to="/verify" className="flex items-center justify-center mx-auto gap-2 px-8 py-5 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold rounded-2xl shadow-[0_0_40px_rgba(79,70,229,0.3)] hover:shadow-[0_0_60px_rgba(79,70,229,0.4)] transition-all hover:-translate-y-1 text-lg cursor-pointer w-fit">
-                <Upload className="w-6 h-6" />
-                Verify my offer now
-              </Link>
-            </div>
-          </motion.div>
+          <div className="p-10 lg:p-16 rounded-[2.5rem] bg-vd-surface border border-vd-border text-center">
+            
+            <h2 className="text-4xl lg:text-6xl font-bold font-serif text-vd-primary tracking-tight mb-6 leading-[1.1]">
+              Got an offer? <span className="text-vd-accent">Verify it.</span>
+            </h2>
+            <p className="text-xl text-vd-secondary mb-10 max-w-2xl mx-auto">
+              Takes 60 seconds. No signup. Could save you ₹5,000 — or your career.
+            </p>
+            <MotionLink whileHover={{ scale: 1.02 }} to="/verify" className="flex items-center justify-center mx-auto gap-2 px-8 py-5 bg-vd-accent hover:bg-vd-accent/90 text-vd-primary font-bold font-serif rounded-2xl active:scale-95 transition-all duration-300 text-lg cursor-pointer w-fit">
+              <Upload className="w-6 h-6" />
+              Verify my offer now
+            </MotionLink>
+          </div>
         </div>
       </section>
     </>

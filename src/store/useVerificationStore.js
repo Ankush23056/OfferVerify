@@ -36,7 +36,6 @@ export const useVerificationStore = create((set, get) => ({
       const formData = new FormData();
       formData.append('file', file);
 
-      // Perform upload with XMLHttpRequest to track progress
       const xhr = new XMLHttpRequest();
       
       const response = await new Promise((resolve, reject) => {
@@ -44,10 +43,8 @@ export const useVerificationStore = create((set, get) => ({
           if (event.lengthComputable) {
             const progress = Math.round((event.loaded * 100) / event.total);
             set({ uploadProgress: progress });
-            // Once fully uploaded and currently in 'uploading' state, we transition smoothly to extracting
             if (progress === 100 && get().status === 'uploading') {
               set({ status: 'extracting' });
-              // After a few seconds of server processing, switch to "analyzing" to show progression
               setTimeout(() => {
                 if (get().status === 'extracting') {
                   set({ status: 'analyzing' });
@@ -84,7 +81,6 @@ export const useVerificationStore = create((set, get) => ({
       try {
         data = JSON.parse(textResponse);
       } catch (err) {
-        console.error("Failed to parse JSON. Raw response from server:", textResponse.substring(0, 200));
         if (textResponse.includes('<!doctype html>')) {
           throw new Error(`Server returned an HTML page instead of API data. The server may have crashed or gone to sleep. Try refreshing the page!`);
         }
@@ -95,7 +91,6 @@ export const useVerificationStore = create((set, get) => ({
         throw new Error(data?.error || `Failed to verify document (Status ${response.status})`);
       }
 
-      // Artificial slight delay so "analyzing" step is visible for at least a split second
       setTimeout(() => {
         set({
            status: 'success',
@@ -104,7 +99,6 @@ export const useVerificationStore = create((set, get) => ({
       }, 800);
 
     } catch (e) {
-      console.error(e);
       set({ status: 'error', errorMsg: e.message || 'An unknown error occurred.' });
     }
   }

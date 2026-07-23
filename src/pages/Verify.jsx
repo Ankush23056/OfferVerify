@@ -7,7 +7,7 @@ import { ResultsDashboard } from '../components/verify/ResultsDashboard';
 
 export function Verify() {
   const { status, file, errorMsg, uploadProgress, startVerification, verifyText } = useVerificationStore();
-  const [inputMode, setInputMode] = useState('file'); // 'file' or 'text'
+  const [inputMode, setInputMode] = useState('file');
   const [pastedText, setPastedText] = useState('');
 
   const onDrop = useCallback((acceptedFiles) => {

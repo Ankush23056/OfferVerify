@@ -110,12 +110,10 @@ export function SearchPage() {
     }
   };
 
-  // Safely destructure — the API returns { companyProfile, reports, verifications, freshlyVerified }
   const profile  = data?.companyProfile ?? null;
   const reports  = Array.isArray(data?.reports)        ? data.reports        : [];
   const verifs   = Array.isArray(data?.verifications)  ? data.verifications  : [];
 
-  // isEmpty = truly nothing to show: no profile, no reports, no verifications
   const hasContent = !!profile || reports.length > 0 || verifs.length > 0;
   const isEmpty    = !loading && !error && !hasContent;
 

@@ -29,7 +29,6 @@ export function CommunityReports({ companyName }) {
       setData(json);
       setError(null);
     } catch (err) {
-      console.error(err);
       setError(err.message || 'An unknown error occurred');
     } finally {
       setLoading(false);
@@ -50,7 +49,7 @@ export function CommunityReports({ companyName }) {
       if (!res.ok) throw new Error('Failed to submit report');
       setReportDetails('');
       setShowReportForm(false);
-      fetchData(); // Refresh data
+      fetchData();
     } catch (err) {
       alert(err.message || 'An unknown error occurred');
     } finally {

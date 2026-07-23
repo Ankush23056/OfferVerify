@@ -31,7 +31,7 @@ export function Home() {
           });
         }
       } catch (err) {
-        console.error('Failed to fetch real stats:', err);
+        // Silently fallback to default stats on error
       }
     };
     fetchStats();

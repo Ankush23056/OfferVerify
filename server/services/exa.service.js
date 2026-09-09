@@ -91,7 +91,7 @@ A legitimate, well-known company = 85-100. Suspicious = 20-50. Unknown = 50-65.`
   let groqResult;
   try {
     const completion = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
+      model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
       temperature: 0.1,
       response_format: { type: 'json_object' },
       messages: [

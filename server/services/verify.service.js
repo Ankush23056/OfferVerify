@@ -18,7 +18,7 @@ const getGroqClient = () => {
 export const analyzeOfferWithAI = async (fileBuffer, mimeType, rawText = null) => {
   let text = rawText || '';
   let messages = [];
-  let model = "llama-3.3-70b-versatile";
+  let model = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 
   const client = getGroqClient();
 
@@ -34,7 +34,7 @@ export const analyzeOfferWithAI = async (fileBuffer, mimeType, rawText = null) =
       throw new Error('Failed to parse PDF file');
     }
   } else if (mimeType.startsWith('image/')) {
-    model = "llama-3.2-11b-vision-preview";
+    model = process.env.GROQ_VISION_MODEL || "qwen/qwen3.8-27b";
     messages = [
       {
         role: "user",
@@ -77,7 +77,7 @@ Return a JSON object with: companyName (string), riskScore (IMPORTANT: put your 
       messages,
       model,
       temperature: 0.2,
-      response_format: model === "llama-3.2-11b-vision-preview" ? undefined : { type: "json_object" }
+      response_format: { type: "json_object" }
     });
   } catch (apiErr) {
     throw new Error(`Groq API Error: ${apiErr.message}`);
